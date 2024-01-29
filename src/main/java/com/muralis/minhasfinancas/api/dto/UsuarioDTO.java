@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class UsuarioDTO {
-	
+	//teste2 git flow
 	private String email;
 	private String nome;
 	private String senha;
