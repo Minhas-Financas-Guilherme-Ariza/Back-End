@@ -41,7 +41,7 @@ public class LancamentoServiceImpl implements LancamentoService{
 	@Override
 	@Transactional
 	public Lancamento atualizar(Lancamento lancamento) {
-		Objects.requireNonNull(lancamento);
+		Objects.requireNonNull(lancamento.getId());
 		validar(lancamento);
 		return repository.save(lancamento);
 	}
@@ -49,7 +49,7 @@ public class LancamentoServiceImpl implements LancamentoService{
 	@Override
 	@Transactional
 	public void deletar(Lancamento lancamento) {
-		Objects.requireNonNull(lancamento);
+		Objects.requireNonNull(lancamento.getId());
 		repository.delete(lancamento);
 		
 	}
