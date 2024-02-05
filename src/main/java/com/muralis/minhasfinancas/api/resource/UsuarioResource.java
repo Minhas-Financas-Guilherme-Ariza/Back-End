@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class UsuarioResource {
 	
 	private final UsuarioService service;
@@ -42,7 +43,7 @@ public class UsuarioResource {
 		
 	}
 	
-	@PostMapping("/salvar")
+	@PostMapping()
 	public ResponseEntity salvar(@RequestBody UsuarioDTO dto) {
 		
 		Usuario usuario = Usuario.builder()
