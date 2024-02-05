@@ -8,9 +8,9 @@
 		<version>2.1.8.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.dsousa</groupId>
+	<groupId>com.muralis</groupId>
 	<artifactId>minhasfinancas</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>minhasfinancas</name>
 	<description>Projeto de gerenciamento de finanças pessoais</description>
 
