@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.muralis.minhasfinancas.api.dto.AtualizaStatusDTO;
 import com.muralis.minhasfinancas.api.dto.LancamentoDTO;
 import com.muralis.minhasfinancas.exception.RegraNegocioException;
+import com.muralis.minhasfinancas.model.entity.Categoria;
 import com.muralis.minhasfinancas.model.entity.Lancamento;
 import com.muralis.minhasfinancas.model.entity.Usuario;
 import com.muralis.minhasfinancas.model.enums.StatusLancamento;
 import com.muralis.minhasfinancas.model.enums.TipoLancamento;
+import com.muralis.minhasfinancas.service.CategoriaService;
 import com.muralis.minhasfinancas.service.LancamentoService;
 import com.muralis.minhasfinancas.service.UsuarioService;
 
@@ -35,6 +37,7 @@ public class LancamentoResource {
 	
 	private final LancamentoService service;
 	private final UsuarioService usuarioService;
+	private final CategoriaService categoriaService;
 
 	
 	
@@ -45,7 +48,8 @@ public class LancamentoResource {
 			@RequestParam(value = "ano", required = false) Integer ano,
 			@RequestParam(value = "tipo", required = false) TipoLancamento tipo,
             @RequestParam(value = "status", required = false) StatusLancamento status,
-			@RequestParam("usuario") Long idUsuario
+			@RequestParam(value = "usuario", required = true) Long idUsuario,
+			@RequestParam(value = "id_categoria", required = false) Long idCategoria
 			) {
 		Lancamento lancamentoFiltro = new Lancamento();
 		lancamentoFiltro.setDescricao(descricao);
@@ -54,12 +58,16 @@ public class LancamentoResource {
 		lancamentoFiltro.setTipo(tipo);
 		lancamentoFiltro.setStatus(status);
 		
+		System.out.println("PASSOOOOOOOOOOOU AUIQHDSILIUBFASDF" + categoriaService.obterPorId(idCategoria));
+		
+		
 		Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
 		if(!usuario.isPresent()) {
 			return ResponseEntity.badRequest().body("Usuário não encontrado para o Id Informado.");
 		}else {
 			lancamentoFiltro.setUsuario(usuario.get());
 		}
+		
 		
 		List<Lancamento> lancamentos = service.buscar(lancamentoFiltro);
 		return ResponseEntity.ok(lancamentos);
@@ -141,6 +149,7 @@ public class LancamentoResource {
 				.status(lancamento.getStatus().name())
 				.tipo(lancamento.getTipo().name())
 				.usuario(lancamento.getUsuario().getId())
+				.categoria(lancamento.getCategoria().getId())
 				.build();
 				
 	}
@@ -155,9 +164,16 @@ public class LancamentoResource {
 		
 		Usuario usuario = usuarioService
 			.obterPorId(dto.getUsuario())
-			.orElseThrow(  () -> new RegraNegocioException("Usuário não encontrado para o Id Informado."));                        
-		
+			.orElseThrow(  () -> new RegraNegocioException("Usuário não encontrado para o Id Informado."));
+
 		lancamento.setUsuario(usuario);
+		
+		
+		Categoria categoria = categoriaService
+				.obterPorId(dto.getCategoria())
+				.orElseThrow( () -> new RegraNegocioException("Categoria não encontrada para o Id Informado."));
+		
+		lancamento.setCategoria(categoria);
 		
 		
 		if (dto.getTipo() != null) {
