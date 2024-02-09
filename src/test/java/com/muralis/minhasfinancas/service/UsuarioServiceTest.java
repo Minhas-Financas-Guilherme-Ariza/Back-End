@@ -3,14 +3,14 @@ package com.muralis.minhasfinancas.service;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.muralis.minhasfinancas.exception.ErroAutenticacao;
 import com.muralis.minhasfinancas.exception.RegraNegocioException;
@@ -19,7 +19,7 @@ import com.muralis.minhasfinancas.model.repository.UsuarioRepository;
 import com.muralis.minhasfinancas.service.impl.UsuarioServiceImpl;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class UsuarioServiceTest {
 	
@@ -31,7 +31,7 @@ public class UsuarioServiceTest {
 	
 	
 	
-	@Test(expected = Test.None.class)
+	@Test
 	public void deveSalvarUmUsuario() {
 		//cenario
 		Mockito.doNothing().when(service).validarEmail(Mockito.anyString());
@@ -59,7 +59,7 @@ public class UsuarioServiceTest {
 		
 	}
 	
-	@Test(expected = RegraNegocioException.class)
+	@Test
 	public void naoDeveSalvarUmUsuarioCOmEmailJaCadastrado() {
 		//cenario
 		String email = "email@email.com";
@@ -70,7 +70,7 @@ public class UsuarioServiceTest {
 		Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail(email);
 		
 		//acao
-		service.salvarUsuario(usuario);
+		 org.junit.jupiter.api.Assertions.assertThrows(RegraNegocioException.class, () -> service.salvarUsuario(usuario));
 		
 		//verificacao
 		Mockito.verify(repository, Mockito.never()).save(usuario);
@@ -130,7 +130,7 @@ public class UsuarioServiceTest {
 	
 	}
 	
-	@Test(expected = Test.None.class)
+	@Test
 	public void deveValidarEmail() {
 		
 		//cenario
@@ -142,14 +142,14 @@ public class UsuarioServiceTest {
 		
 	}
 	
-	@Test(expected = RegraNegocioException.class)
+	@Test
 	public void deveLancarErroAoValidarEmailQuandoExistirEmailCadastrado() {
 		
 		//cenario
 		Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(true);
 		
 		//acao
-		service.validarEmail("email@email.com");
+		org.junit.jupiter.api.Assertions.assertThrows(RegraNegocioException.class, () -> service.validarEmail("email@email.com"));
 		
 		
 	}

@@ -70,5 +70,11 @@ public class Lancamento {
 	@JoinColumn(name="id_categoria")
 	private Categoria categoria;
 	
+	@Column(name="latitude")
+	private BigDecimal latitude;
+	
+	@Column(name="longitude")
+	private BigDecimal longitude;
+	
 
 }

@@ -35,7 +35,7 @@ public class Categoria {
 	private String descricao;
 	
 	@Column(name = "ativo")
-	private boolean ativo;
+	private boolean ativo = true;
 	
 
 }

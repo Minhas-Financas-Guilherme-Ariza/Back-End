@@ -1,5 +1,6 @@
 package com.muralis.minhasfinancas.api.resource;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,23 +50,31 @@ public class LancamentoResource {
 			@RequestParam(value = "tipo", required = false) TipoLancamento tipo,
             @RequestParam(value = "status", required = false) StatusLancamento status,
 			@RequestParam(value = "usuario", required = true) Long idUsuario,
-			@RequestParam(value = "id_categoria", required = false) Long idCategoria
+			@RequestParam(value = "id_categoria", required = false) Long idCategoria,
+			@RequestParam(value = "latitude", required = false) BigDecimal latitude,
+			@RequestParam(value = "longitude", required = false) BigDecimal longitude
 			) {
 		Lancamento lancamentoFiltro = new Lancamento();
 		lancamentoFiltro.setDescricao(descricao);
 		lancamentoFiltro.setMes(mes);
 		lancamentoFiltro.setAno(ano);
 		lancamentoFiltro.setTipo(tipo);
-		lancamentoFiltro.setStatus(status);
-		
-		System.out.println("PASSOOOOOOOOOOOU AUIQHDSILIUBFASDF" + categoriaService.obterPorId(idCategoria));
-		
+		lancamentoFiltro.setStatus(status);		
+		lancamentoFiltro.setLatitude(latitude);	
+		lancamentoFiltro.setLongitude(longitude);	
 		
 		Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
 		if(!usuario.isPresent()) {
 			return ResponseEntity.badRequest().body("Usuário não encontrado para o Id Informado.");
 		}else {
 			lancamentoFiltro.setUsuario(usuario.get());
+		}
+		
+		Optional<Categoria> categoria = categoriaService.obterPorId(idUsuario);
+		if(!categoria.isPresent()) {
+			return ResponseEntity.badRequest().body("Categoria não encontrada para o Id Informado.");
+		}else {
+			lancamentoFiltro.setCategoria(categoria.get());
 		}
 		
 		
@@ -150,6 +159,8 @@ public class LancamentoResource {
 				.tipo(lancamento.getTipo().name())
 				.usuario(lancamento.getUsuario().getId())
 				.categoria(lancamento.getCategoria().getId())
+				.latitude(lancamento.getLatitude())
+				.longitude(lancamento.getLongitude())
 				.build();
 				
 	}
@@ -161,6 +172,8 @@ public class LancamentoResource {
 		lancamento.setAno(dto.getAno());
 		lancamento.setMes(dto.getMes());
 		lancamento.setValor(dto.getValor());
+		lancamento.setLatitude(dto.getLatitude());
+		lancamento.setLongitude(dto.getLongitude());
 		
 		Usuario usuario = usuarioService
 			.obterPorId(dto.getUsuario())
