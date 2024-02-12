@@ -86,7 +86,7 @@ public class UsuarioRepositoryTest {
 		Optional<Usuario> result = repository.findByEmail("usuario@email.com");
 		
 		Assertions.assertThat(result.isPresent()).isFalse();
-
+		
 					
 	}
 	
