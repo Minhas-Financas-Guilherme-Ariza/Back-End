@@ -57,6 +57,11 @@ public class CategoriaServiceImpl implements CategoriaService{
 		return repository.findById(id);
 	}
 
+	@Override
+	public Categoria obterPorDescricao(String descricao) {
+		return repository.findFirstByDescricao(descricao);
+	}
+
 	
 
 }

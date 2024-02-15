@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CategoriaResource {
 	
-	private final CategoriaRepository repository;
+	//private final CategoriaRepository repository;
 	
 	private final CategoriaService categoriaService;
 	

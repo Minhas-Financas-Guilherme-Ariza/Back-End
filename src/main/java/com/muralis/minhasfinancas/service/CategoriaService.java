@@ -14,5 +14,7 @@ public interface CategoriaService {
 	List<Categoria> buscar();
 
 	Optional<Categoria> obterPorId(Long id);
+	
+	Categoria obterPorDescricao(String descricao);
 
 }

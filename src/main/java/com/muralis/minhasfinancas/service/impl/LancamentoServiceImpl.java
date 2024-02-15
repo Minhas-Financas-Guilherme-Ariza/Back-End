@@ -37,6 +37,12 @@ public class LancamentoServiceImpl implements LancamentoService{
 		lancamento.setStatus(StatusLancamento.PENDENTE);
 		return repository.save(lancamento);
 	}
+	
+	@Override
+	@Transactional
+	public List<Lancamento> salvarComStatus(List<Lancamento> lancamentos) {
+		return repository.saveAll(lancamentos);
+	}
 
 	@Override
 	@Transactional
@@ -91,9 +97,9 @@ public class LancamentoServiceImpl implements LancamentoService{
 			throw new RegraNegocioException("Informe um Usuário.");
 		}
 		
-		if(lancamento.getValor() == null || lancamento.getValor().compareTo(BigDecimal.ZERO) < 1){
+		/*if(lancamento.getValor() == null || lancamento.getValor().compareTo(BigDecimal.ZERO) < 1){
 			throw new RegraNegocioException("Informe um Valor válido.");
-		}
+		}*/
 		
 		if(lancamento.getTipo() == null){
 			throw new RegraNegocioException("Informe um Tipo de Lançamento.");
