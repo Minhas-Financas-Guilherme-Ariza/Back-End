@@ -1,5 +1,6 @@
 package com.muralis.minhasfinancas.api.resource;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;

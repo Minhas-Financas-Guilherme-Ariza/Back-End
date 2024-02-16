@@ -1,6 +1,7 @@
 package com.muralis.minhasfinancas.api.resource;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +50,7 @@ public class LancamentoResource {
 			@RequestParam(value = "ano", required = false) Integer ano,
 			@RequestParam(value = "tipo", required = false) TipoLancamento tipo,
             @RequestParam(value = "status", required = false) StatusLancamento status,
-			@RequestParam(value = "usuario", required = true) Long idUsuario,
+			@RequestParam("usuario") Long idUsuario,
 			@RequestParam(value = "id_categoria", required = false) Long idCategoria,
 			@RequestParam(value = "latitude", required = false) BigDecimal latitude,
 			@RequestParam(value = "longitude", required = false) BigDecimal longitude
@@ -69,16 +70,18 @@ public class LancamentoResource {
 		}else {
 			lancamentoFiltro.setUsuario(usuario.get());
 		}
-		
-		Optional<Categoria> categoria = categoriaService.obterPorId(idUsuario);
-		if(!categoria.isPresent()) {
-			return ResponseEntity.badRequest().body("Categoria não encontrada para o Id Informado.");
-		}else {
-			lancamentoFiltro.setCategoria(categoria.get());
+
+		if(idCategoria != null) {
+			Optional<Categoria> categoria = categoriaService.obterPorId(idCategoria);
+			if(categoria.isPresent()) {
+				lancamentoFiltro.setCategoria(categoria.get());
+
+			}
 		}
+		List<Lancamento> lancamentos = new ArrayList();
 		
-		
-		List<Lancamento> lancamentos = service.buscar(lancamentoFiltro);
+		lancamentos = service.buscar(lancamentoFiltro);
+
 		return ResponseEntity.ok(lancamentos);
 		
 		
