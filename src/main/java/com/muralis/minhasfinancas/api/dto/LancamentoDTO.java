@@ -20,8 +20,11 @@ public class LancamentoDTO {
 	private Integer ano;
 	private BigDecimal valor;
 	private Long usuario;
+	private Long categoria;
 	private String tipo;
 	private String status;
+	private BigDecimal latitude;
+	private BigDecimal longitude;
 	
 
 }

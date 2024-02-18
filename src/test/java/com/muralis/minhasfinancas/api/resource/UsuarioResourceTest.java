@@ -1,19 +1,30 @@
 package com.muralis.minhasfinancas.api.resource;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muralis.minhasfinancas.api.dto.UsuarioDTO;
@@ -23,7 +34,7 @@ import com.muralis.minhasfinancas.model.entity.Usuario;
 import com.muralis.minhasfinancas.service.LancamentoService;
 import com.muralis.minhasfinancas.service.UsuarioService;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @WebMvcTest(controllers = UsuarioResource.class)
 @AutoConfigureMockMvc
@@ -40,6 +51,7 @@ public class UsuarioResourceTest {
 	
 	@MockBean
 	LancamentoService lancamentoService;
+	
 	
 	@Test
 	public void deveAutenticarUmUsuario() throws Exception{
