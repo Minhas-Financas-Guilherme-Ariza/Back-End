@@ -23,8 +23,8 @@ public class LancamentoDTO {
 	private Long categoria;
 	private String tipo;
 	private String status;
-	private BigDecimal latitude;
-	private BigDecimal longitude;
+	private String latitude;
+	private String longitude;
 	
 
 }

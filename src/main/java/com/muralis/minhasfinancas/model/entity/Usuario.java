@@ -15,7 +15,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-
 @Entity
 @Table(name = "usuario", schema = "financas")
 @Builder
@@ -33,6 +32,7 @@ public class Usuario {
 	private String nome;
 	
 	@Column(name = "email")
+	@JsonIgnore
 	private String email;
 	
 	@Column(name = "senha")

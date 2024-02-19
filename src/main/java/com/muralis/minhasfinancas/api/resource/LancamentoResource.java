@@ -1,13 +1,11 @@
 package com.muralis.minhasfinancas.api.resource;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,8 +50,8 @@ public class LancamentoResource {
             @RequestParam(value = "status", required = false) StatusLancamento status,
 			@RequestParam("usuario") Long idUsuario,
 			@RequestParam(value = "id_categoria", required = false) Long idCategoria,
-			@RequestParam(value = "latitude", required = false) BigDecimal latitude,
-			@RequestParam(value = "longitude", required = false) BigDecimal longitude
+			@RequestParam(value = "latitude", required = false) String latitude,
+			@RequestParam(value = "longitude", required = false) String longitude
 			) {
 		Lancamento lancamentoFiltro = new Lancamento();
 		lancamentoFiltro.setDescricao(descricao);

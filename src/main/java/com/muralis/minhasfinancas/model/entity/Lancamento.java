@@ -74,10 +74,10 @@ public class Lancamento {
 	private Categoria categoria;
 	
 	@Column(name="latitude")
-	private BigDecimal latitude;
+	private String latitude;
 	
 	@Column(name="longitude")
-	private BigDecimal longitude;
+	private String longitude;
 	
 
 }
