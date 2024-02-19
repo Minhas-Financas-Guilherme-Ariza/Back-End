@@ -96,9 +96,9 @@ public class LancamentoServiceImpl implements LancamentoService{
 			throw new RegraNegocioException("Informe um Usuário.");
 		}
 		
-		/*if(lancamento.getValor() == null || lancamento.getValor().compareTo(BigDecimal.ZERO) < 1){
+		if(lancamento.getValor() == null || lancamento.getValor().compareTo(BigDecimal.ZERO) < 1){
 			throw new RegraNegocioException("Informe um Valor válido.");
-		}*/
+		}
 		
 		if(lancamento.getTipo() == null){
 			throw new RegraNegocioException("Informe um Tipo de Lançamento.");

@@ -149,7 +149,7 @@ public class LancamentoResource {
 		
 	}
 	
-	private LancamentoDTO converter(Lancamento lancamento) {
+	public LancamentoDTO converter(Lancamento lancamento) {
 		return LancamentoDTO.builder()
 				.id(lancamento.getId())
 				.descricao(lancamento.getDescricao())
@@ -167,7 +167,7 @@ public class LancamentoResource {
 				
 	}
 	
-	private Lancamento converter(LancamentoDTO dto) {
+	public Lancamento converter(LancamentoDTO dto) {
 		Lancamento lancamento = new Lancamento();
 		lancamento.setId(dto.getId());
 		lancamento.setDescricao(dto.getDescricao());
