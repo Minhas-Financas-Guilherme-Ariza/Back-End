@@ -58,7 +58,7 @@ public class CategoriaServiceImpl implements CategoriaService{
 	}
 
 	@Override
-	public Categoria obterPorDescricao(String descricao) {
+	public Optional<Categoria> obterPorDescricao(String descricao) {
 		return repository.findFirstByDescricao(descricao);
 	}
 

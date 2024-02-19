@@ -15,6 +15,6 @@ public interface CategoriaService {
 
 	Optional<Categoria> obterPorId(Long id);
 	
-	Categoria obterPorDescricao(String descricao);
+	Optional<Categoria> obterPorDescricao(String descricao);
 
 }

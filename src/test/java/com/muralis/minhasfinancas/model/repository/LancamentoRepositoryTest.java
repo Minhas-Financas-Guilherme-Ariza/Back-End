@@ -35,6 +35,7 @@ public class LancamentoRepositoryTest {
 	@Test
 	public void deveSalvarUmLancamento() {
 		Lancamento lancamento = criarLancamento();
+		lancamento.setCategoria(null);
 		repository.save(lancamento);
 		
 		assertThat(lancamento.getId()).isNotNull();

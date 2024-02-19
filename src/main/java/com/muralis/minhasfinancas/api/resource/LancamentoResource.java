@@ -1,5 +1,6 @@
 package com.muralis.minhasfinancas.api.resource;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,8 +40,6 @@ public class LancamentoResource {
 	private final UsuarioService usuarioService;
 	private final CategoriaService categoriaService;
 
-	
-	
 	@GetMapping
 	public ResponseEntity buscar(			
 			@RequestParam(value = "descricao", required = false) String descricao,
@@ -117,7 +116,7 @@ public class LancamentoResource {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}).orElseGet(() 
-				-> new ResponseEntity("Lançamento não encontrado na base de dado", HttpStatus.BAD_REQUEST));
+				-> new ResponseEntity("Lançamento não encontrado na base de dados", HttpStatus.BAD_REQUEST));
 	}
 	
 	@PutMapping("{id}/atualiza-status")
@@ -163,6 +162,7 @@ public class LancamentoResource {
 				.categoria(lancamento.getCategoria().getId())
 				.latitude(lancamento.getLatitude())
 				.longitude(lancamento.getLongitude())
+				.dataCadastro(lancamento.getDataCadastro())
 				.build();
 				
 	}
@@ -176,6 +176,7 @@ public class LancamentoResource {
 		lancamento.setValor(dto.getValor());
 		lancamento.setLatitude(dto.getLatitude());
 		lancamento.setLongitude(dto.getLongitude());
+		lancamento.setDataCadastro(dto.getDataCadastro());
 		
 		Usuario usuario = usuarioService
 			.obterPorId(dto.getUsuario())

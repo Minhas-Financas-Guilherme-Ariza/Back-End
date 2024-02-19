@@ -1,6 +1,7 @@
 package com.muralis.minhasfinancas.api.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,7 @@ public class LancamentoDTO {
 	private String status;
 	private String latitude;
 	private String longitude;
+	private LocalDate dataCadastro;
 	
 
 }

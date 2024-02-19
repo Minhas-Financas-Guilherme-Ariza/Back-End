@@ -1,11 +1,5 @@
 package com.muralis.minhasfinancas.api.resource;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -14,17 +8,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muralis.minhasfinancas.api.dto.UsuarioDTO;
@@ -56,9 +46,9 @@ public class UsuarioResourceTest {
 	@Test
 	public void deveAutenticarUmUsuario() throws Exception{
 		//cenario
-		
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		String email = "usuario@email.com";
-		String senha = "123";
+		String senha = encoder.encode("senha");
 		
 		UsuarioDTO dto = UsuarioDTO.builder().email(email).senha(senha).build();
 		
@@ -78,9 +68,8 @@ public class UsuarioResourceTest {
 		mvc
 			.perform(request)
 			.andExpect(MockMvcResultMatchers.status().isOk())
-			.andExpect(MockMvcResultMatchers.jsonPath("id").value(usuario.getId()))
+			.andExpect(MockMvcResultMatchers.jsonPath("token").exists())
 			.andExpect(MockMvcResultMatchers.jsonPath("nome").value(usuario.getNome()))
-			.andExpect(MockMvcResultMatchers.jsonPath("email").value(usuario.getEmail()))
 		;
 	}
 	

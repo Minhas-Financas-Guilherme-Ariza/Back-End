@@ -127,29 +127,14 @@ public class CsvResource {
 	        @RequestParam(value = "mes", required = false) Integer mes,
 	        @RequestParam(value = "ano", required = false) Integer ano,
 	        @RequestParam(value = "tipo", required = false) TipoLancamento tipo,
-	        @RequestParam(value = "status", required = false) StatusLancamento status,
-	        @RequestParam(value = "usuario", required = false) Long idUsuario,
-	        @RequestParam(value = "id_categoria", required = false) Long idCategoria,
-	        @RequestParam(value = "latitude", required = false) String latitude,
-	        @RequestParam(value = "longitude", required = false) String longitude) throws JsonProcessingException {
+	        @RequestParam(value = "id_categoria", required = false) Long idCategoria) throws JsonProcessingException {
 
-		
 		Lancamento lancamentoFiltro = new Lancamento();
 		lancamentoFiltro.setDescricao(descricao);
 		lancamentoFiltro.setMes(mes);
 		lancamentoFiltro.setAno(ano);
 		lancamentoFiltro.setTipo(tipo);
-		lancamentoFiltro.setStatus(status);		
-		lancamentoFiltro.setLatitude(latitude);	
-		lancamentoFiltro.setLongitude(longitude);
 		
-		if(idUsuario != null) {
-			Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
-			if(usuario.isPresent()) {
-				lancamentoFiltro.setUsuario(usuario.get());
-
-			}
-		}
 		if(idCategoria != null) {
 			Optional<Categoria> categoria = categoriaService.obterPorId(idCategoria);
 			if(categoria.isPresent()) {
@@ -172,7 +157,7 @@ public class CsvResource {
         DateTimeFormatter formatador = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String carimbo = localDateTimeAtual.format(formatador);
         String nomeArquivo = "lancamento_" + carimbo + ".json";
-        File file = new File("C:\\Users\\USER\\Downloads\\arquivosjson\\" + nomeArquivo);
+        File file = new File("C:\\Users\\MURALIS\\Downloads\\" + nomeArquivo);
         
         //Criando arquivo
 		criarArquivo(file, lancamentosResultado);
@@ -326,17 +311,22 @@ public class CsvResource {
 			lancamento.setLongitude(csvDTO.getLONG());
 			
 			//Categoria
-			Categoria categoriaBuscada = categoriaService.obterPorDescricao(csvDTO.getCATEGORIA());
-			if(categoriaBuscada == null) {
-				Categoria novaCategoria = new Categoria();
-				novaCategoria.setDescricao(csvDTO.getCATEGORIA());
-				
-				lancamento.setCategoria(categoriaBuscada);
-				
-				categoriaService.salvar(novaCategoria);
+			
+			if(csvDTO.getCATEGORIA() == null || csvDTO.getCATEGORIA().isEmpty()) {
+				lancamento.setCategoria(null);
 			}else {
-				lancamento.setCategoria(categoriaBuscada);
+				Optional<Categoria> categoriaBuscada = categoriaService.obterPorDescricao(csvDTO.getCATEGORIA());
+				if(categoriaBuscada == null) {
+					Categoria novaCategoria = new Categoria();
+					novaCategoria.setDescricao(csvDTO.getCATEGORIA());
+					lancamento.setCategoria(categoriaBuscada.get());
+					categoriaService.salvar(novaCategoria);
+				}else {
+					lancamento.setCategoria(categoriaBuscada.get());
+				}
 			}
+			
+			
 			
 			//Tipo
 			lancamento.setTipo(TipoLancamento.valueOf(csvDTO.getTIPO()));
