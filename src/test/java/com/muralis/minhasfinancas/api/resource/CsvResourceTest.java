@@ -1,11 +1,6 @@
 package com.muralis.minhasfinancas.api.resource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -81,9 +76,9 @@ public class CsvResourceTest {
         categoria.setId(1L);
 
         ResponseEntity<?> responseEntity = csvResource.uploadArquivo(file);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
-        Mockito.verify(lancamentoService).salvarComStatus(any());
+        Mockito.verify(lancamentoService).salvarComStatus(Mockito.any());
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                                                     .multipart(API.concat("/upload"))
@@ -100,7 +95,7 @@ public class CsvResourceTest {
                 MediaType.MULTIPART_FORM_DATA_VALUE, new byte[0]);
 
         ResponseEntity<?> responseEntity = csvResource.uploadArquivo(file);
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                                                     .multipart(API.concat("/upload"))
@@ -128,11 +123,11 @@ public class CsvResourceTest {
         List<Lancamento> lancamentos = new ArrayList<>();
         lancamentos.add(lancamento);
 
-        when(lancamentoService.buscar(any(Lancamento.class))).thenReturn(lancamentos);
+        Mockito.when(lancamentoService.buscar(Mockito.any(Lancamento.class))).thenReturn(lancamentos);
 
         ResponseEntity<?> responseEntity = csvResource.downloadArquivo("Teste", LocalDate.now().getMonthValue(),
                 LocalDate.now().getYear(), TipoLancamento.DESPESA, 1L);
-        assertNotNull(responseEntity);
+        Assertions.assertNotNull(responseEntity);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                                                     .get(API.concat("/download"))
@@ -150,7 +145,7 @@ public class CsvResourceTest {
     @Test
     public void deveReceberUmFiltroDeDownloadVazio() throws Exception {
         ResponseEntity<?> responseEntity = csvResource.downloadArquivo(null, null, null, null, null);
-        assertNotNull(responseEntity);
+        Assertions.assertNotNull(responseEntity);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                                                     .get(API.concat("/download"));
@@ -168,7 +163,7 @@ public class CsvResourceTest {
                 MediaType.MULTIPART_FORM_DATA_VALUE, csvContent.getBytes());
 
         boolean result = csvResource.verificarConteudoArquivo(file);
-        assertTrue(result);
+        Assertions.assertTrue(result);
 
     }
 
@@ -178,7 +173,7 @@ public class CsvResourceTest {
                 MediaType.MULTIPART_FORM_DATA_VALUE, new byte[0]);
 
         boolean result = csvResource.verificarConteudoArquivo(file);
-        assertFalse(result);
+        Assertions.assertFalse(result);
 
     }
 
@@ -196,8 +191,8 @@ public class CsvResourceTest {
         File file = new File("C:\\Users\\MURALIS\\Downloads\\" + nomeArquivo);
         file = csvResource.criarArquivo(file, lancamentos);
 
-        assertTrue(file.exists());
-        assertTrue(file.isFile());
+        Assertions.assertTrue(file.exists());
+        Assertions.assertTrue(file.isFile());
 
         file.delete();
 
