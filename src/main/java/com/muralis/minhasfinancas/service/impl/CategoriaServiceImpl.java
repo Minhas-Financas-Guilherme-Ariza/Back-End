@@ -3,14 +3,10 @@ package com.muralis.minhasfinancas.service.impl;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.muralis.minhasfinancas.exception.RegraNegocioException;
 import com.muralis.minhasfinancas.model.entity.Categoria;
-import com.muralis.minhasfinancas.model.entity.Usuario;
 import com.muralis.minhasfinancas.model.repository.CategoriaRepository;
 import com.muralis.minhasfinancas.service.CategoriaService;
 

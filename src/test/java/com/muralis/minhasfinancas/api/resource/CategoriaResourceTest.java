@@ -69,12 +69,6 @@ public class CategoriaResourceTest {
 	@Test
 	public void deveRetornarTodasCategorias() throws Exception {
 		
-		List<Categoria> listaCategorias = new ArrayList();
-		
-		Mockito.when(service.buscar()).thenReturn(listaCategorias);
-		
-		String json = new ObjectMapper().writeValueAsString(listaCategorias);
-		
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
 				.get(API);
 

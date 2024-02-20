@@ -56,7 +56,6 @@ public class CsvResource {
 	@PostMapping(value = "/upload" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> uploadArquivo(@RequestParam MultipartFile file){
 		
-		
 		if (!verificarConteudoArquivo(file)) {
 			return new ResponseEntity("O arquivo está vazio.", HttpStatus.BAD_REQUEST);
         } 
