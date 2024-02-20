@@ -37,6 +37,12 @@ public class LancamentoServiceImpl implements LancamentoService{
 		lancamento.setStatus(StatusLancamento.PENDENTE);
 		return repository.save(lancamento);
 	}
+	
+	@Override
+	@Transactional
+	public List<Lancamento> salvarComStatus(List<Lancamento> lancamentos) {
+		return repository.saveAll(lancamentos);
+	}
 
 	@Override
 	@Transactional
@@ -57,11 +63,10 @@ public class LancamentoServiceImpl implements LancamentoService{
 	@Override
 	@Transactional(readOnly = true)
 	public List<Lancamento> buscar(Lancamento lancamentoFiltro) {	
-		Example example = Example.of(lancamentoFiltro, 
+		Example<Lancamento> example = Example.of(lancamentoFiltro, 
 				ExampleMatcher.matching()
 					.withIgnoreCase()
 					.withStringMatcher(StringMatcher.CONTAINING));
-		
 		return repository.findAll(example);
 	}
 

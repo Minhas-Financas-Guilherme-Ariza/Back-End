@@ -1,16 +1,20 @@
 package com.muralis.minhasfinancas.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.muralis.minhasfinancas.exception.ErroAutenticacao;
 import com.muralis.minhasfinancas.exception.RegraNegocioException;
@@ -19,7 +23,7 @@ import com.muralis.minhasfinancas.model.repository.UsuarioRepository;
 import com.muralis.minhasfinancas.service.impl.UsuarioServiceImpl;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class UsuarioServiceTest {
 	
@@ -29,10 +33,12 @@ public class UsuarioServiceTest {
 	@MockBean
 	UsuarioRepository repository;
 	
-	
-	
-	@Test(expected = Test.None.class)
+	@Test
 	public void deveSalvarUmUsuario() {
+		
+		
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		
 		//cenario
 		Mockito.doNothing().when(service).validarEmail(Mockito.anyString());
 		Usuario usuario = Usuario
@@ -46,20 +52,19 @@ public class UsuarioServiceTest {
 		Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
 		
 		//acao
-		Usuario usuarioSalvo = service.salvarUsuario(new Usuario());
+		Usuario usuarioSalvo = service.salvarUsuario(usuario);
 		
 		//verificacao
-		Assertions.assertThat(usuarioSalvo).isNotNull();
-		Assertions.assertThat(usuarioSalvo.getId()).isEqualTo(1l);
-		Assertions.assertThat(usuarioSalvo.getNome()).isEqualTo("nome");
-		Assertions.assertThat(usuarioSalvo.getEmail()).isEqualTo("email@email.com");			
-		Assertions.assertThat(usuarioSalvo.getSenha()).isEqualTo("senha");
+		assertThat(usuarioSalvo).isNotNull();
+		assertThat(usuarioSalvo.getId()).isEqualTo(1l);
+		assertThat(usuarioSalvo.getNome()).isEqualTo("nome");
+		assertThat(usuarioSalvo.getEmail()).isEqualTo("email@email.com");	
+		boolean senhaDevidamenteCriptografada = encoder.matches("senha", usuario.getSenha());
+		assertThat(senhaDevidamenteCriptografada).isEqualTo(true);
 
-		
-		
 	}
 	
-	@Test(expected = RegraNegocioException.class)
+	@Test
 	public void naoDeveSalvarUmUsuarioCOmEmailJaCadastrado() {
 		//cenario
 		String email = "email@email.com";
@@ -70,7 +75,7 @@ public class UsuarioServiceTest {
 		Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail(email);
 		
 		//acao
-		service.salvarUsuario(usuario);
+		assertThrows(RegraNegocioException.class, () -> service.salvarUsuario(usuario));
 		
 		//verificacao
 		Mockito.verify(repository, Mockito.never()).save(usuario);
@@ -81,17 +86,19 @@ public class UsuarioServiceTest {
 	@Test
 	public void deveAutenticarUmUsuarioComSucesso() {
 		//CENARIO
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		
 		String email = "email@email.com";
-		String senha = "senha";
+		String senha = encoder.encode("senha");
 		
 		Usuario usuario = Usuario.builder().email(email).senha(senha).id(1l).build();
 		Mockito.when(repository.findByEmail(email)).thenReturn(Optional.of(usuario));
 		
 		//acao
-		Usuario result = service.autenticar(email, senha);
+		Usuario result = service.autenticar(email, "senha");
 		
 		//verificacao
-		Assertions.assertThat(result).isNotNull();
+		assertThat(result).isNotNull();
 		
 	}
 	
@@ -101,11 +108,11 @@ public class UsuarioServiceTest {
 		Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
 		
 		//acao
-		Throwable exception = Assertions.catchThrowable(() -> service.autenticar("email@email.com", "senha"));
+		Throwable exception = catchThrowable(() -> service.autenticar("email@email.com", "senha"));
 		//verificacao
-		Assertions.assertThat(exception)
+		assertThat(exception)
 				.isInstanceOf(ErroAutenticacao.class)
-				.hasMessage("Usuario não encontrado para o e-mail informado.");
+				.hasMessage("Usuário não encontrado para o e-mail informado.");
 		
 	}
 	
@@ -122,15 +129,15 @@ public class UsuarioServiceTest {
 		Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(usuario));
 		
 		//acao
-		Throwable exception = Assertions.catchThrowable(() -> service.autenticar("email@email.com", "123"));
-		Assertions.assertThat(exception)
+		Throwable exception = catchThrowable(() -> service.autenticar("email@email.com", "123"));
+		assertThat(exception)
 				.isInstanceOf(ErroAutenticacao.class)
 				.hasMessage("Senha inválida.");
 		
 	
 	}
 	
-	@Test(expected = Test.None.class)
+	@Test
 	public void deveValidarEmail() {
 		
 		//cenario
@@ -142,14 +149,14 @@ public class UsuarioServiceTest {
 		
 	}
 	
-	@Test(expected = RegraNegocioException.class)
+	@Test
 	public void deveLancarErroAoValidarEmailQuandoExistirEmailCadastrado() {
 		
 		//cenario
 		Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(true);
 		
 		//acao
-		service.validarEmail("email@email.com");
+		assertThrows(RegraNegocioException.class, () -> service.validarEmail("email@email.com"));
 		
 		
 	}

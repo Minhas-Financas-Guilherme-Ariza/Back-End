@@ -1,28 +1,35 @@
 package com.muralis.minhasfinancas.model.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import javax.transaction.Transactional;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.muralis.minhasfinancas.MinhasfinancasApplication;
 import com.muralis.minhasfinancas.model.entity.Lancamento;
 import com.muralis.minhasfinancas.model.enums.StatusLancamento;
 import com.muralis.minhasfinancas.model.enums.TipoLancamento;
 
-@RunWith(SpringRunner.class)
-@DataJpaTest
+@ExtendWith(SpringExtension.class)
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @ActiveProfiles("test")
+@AutoConfigureTestEntityManager
+@Transactional
+@SpringBootTest(classes = MinhasfinancasApplication.class)
 public class LancamentoRepositoryTest {
 	
 	@Autowired
@@ -34,6 +41,7 @@ public class LancamentoRepositoryTest {
 	@Test
 	public void deveSalvarUmLancamento() {
 		Lancamento lancamento = criarLancamento();
+		lancamento.setCategoria(null);
 		repository.save(lancamento);
 		
 		assertThat(lancamento.getId()).isNotNull();
@@ -48,8 +56,12 @@ public class LancamentoRepositoryTest {
 									.tipo(TipoLancamento.RECEITA)
 									.status(StatusLancamento.PENDENTE)
 									.dataCadastro(LocalDate.now())
+									.categoria(null)
+									.latitude("15")
+									.longitude("16")
 									.build();
 	}
+	
 	
 	@Test
 	public void deveAtualizarUmLancamento() {

@@ -1,11 +1,12 @@
 package com.muralis.minhasfinancas.api.resource;
 
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,10 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.muralis.minhasfinancas.api.dto.AtualizaStatusDTO;
 import com.muralis.minhasfinancas.api.dto.LancamentoDTO;
 import com.muralis.minhasfinancas.exception.RegraNegocioException;
+import com.muralis.minhasfinancas.model.entity.Categoria;
 import com.muralis.minhasfinancas.model.entity.Lancamento;
 import com.muralis.minhasfinancas.model.entity.Usuario;
 import com.muralis.minhasfinancas.model.enums.StatusLancamento;
 import com.muralis.minhasfinancas.model.enums.TipoLancamento;
+import com.muralis.minhasfinancas.service.CategoriaService;
 import com.muralis.minhasfinancas.service.LancamentoService;
 import com.muralis.minhasfinancas.service.UsuarioService;
 
@@ -35,20 +38,28 @@ public class LancamentoResource {
 	
 	private final LancamentoService service;
 	private final UsuarioService usuarioService;
+	private final CategoriaService categoriaService;
 
-	
-	
 	@GetMapping
 	public ResponseEntity buscar(			
 			@RequestParam(value = "descricao", required = false) String descricao,
 			@RequestParam(value = "mes", required = false) Integer mes,
 			@RequestParam(value = "ano", required = false) Integer ano,
-			@RequestParam("usuario") Long idUsuario
+			@RequestParam(value = "tipo", required = false) TipoLancamento tipo,
+            @RequestParam(value = "status", required = false) StatusLancamento status,
+			@RequestParam("usuario") Long idUsuario,
+			@RequestParam(value = "id_categoria", required = false) Long idCategoria,
+			@RequestParam(value = "latitude", required = false) String latitude,
+			@RequestParam(value = "longitude", required = false) String longitude
 			) {
 		Lancamento lancamentoFiltro = new Lancamento();
 		lancamentoFiltro.setDescricao(descricao);
 		lancamentoFiltro.setMes(mes);
 		lancamentoFiltro.setAno(ano);
+		lancamentoFiltro.setTipo(tipo);
+		lancamentoFiltro.setStatus(status);		
+		lancamentoFiltro.setLatitude(latitude);	
+		lancamentoFiltro.setLongitude(longitude);	
 		
 		Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
 		if(!usuario.isPresent()) {
@@ -56,8 +67,18 @@ public class LancamentoResource {
 		}else {
 			lancamentoFiltro.setUsuario(usuario.get());
 		}
+
+		if(idCategoria != null) {
+			Optional<Categoria> categoria = categoriaService.obterPorId(idCategoria);
+			if(categoria.isPresent()) {
+				lancamentoFiltro.setCategoria(categoria.get());
+
+			}
+		}
+		List<Lancamento> lancamentos = new ArrayList();
 		
-		List<Lancamento> lancamentos = service.buscar(lancamentoFiltro);
+		lancamentos = service.buscar(lancamentoFiltro);
+
 		return ResponseEntity.ok(lancamentos);
 		
 		
@@ -82,6 +103,7 @@ public class LancamentoResource {
 		}
 	}
 	
+	
 	@PutMapping("{id}")
 	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody LancamentoDTO dto) {
 		return service.obterPorId(id).map(entity -> {
@@ -94,7 +116,7 @@ public class LancamentoResource {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}).orElseGet(() 
-				-> new ResponseEntity("Lançamento não encontrado na base de dado", HttpStatus.BAD_REQUEST));
+				-> new ResponseEntity("Lançamento não encontrado na base de dados", HttpStatus.BAD_REQUEST));
 	}
 	
 	@PutMapping("{id}/atualiza-status")
@@ -127,7 +149,7 @@ public class LancamentoResource {
 		
 	}
 	
-	private LancamentoDTO converter(Lancamento lancamento) {
+	public LancamentoDTO converter(Lancamento lancamento) {
 		return LancamentoDTO.builder()
 				.id(lancamento.getId())
 				.descricao(lancamento.getDescricao())
@@ -137,23 +159,37 @@ public class LancamentoResource {
 				.status(lancamento.getStatus().name())
 				.tipo(lancamento.getTipo().name())
 				.usuario(lancamento.getUsuario().getId())
+				.categoria(lancamento.getCategoria().getId())
+				.latitude(lancamento.getLatitude())
+				.longitude(lancamento.getLongitude())
+				.dataCadastro(lancamento.getDataCadastro())
 				.build();
 				
 	}
 	
-	private Lancamento converter(LancamentoDTO dto) {
+	public Lancamento converter(LancamentoDTO dto) {
 		Lancamento lancamento = new Lancamento();
 		lancamento.setId(dto.getId());
 		lancamento.setDescricao(dto.getDescricao());
 		lancamento.setAno(dto.getAno());
 		lancamento.setMes(dto.getMes());
 		lancamento.setValor(dto.getValor());
+		lancamento.setLatitude(dto.getLatitude());
+		lancamento.setLongitude(dto.getLongitude());
+		lancamento.setDataCadastro(dto.getDataCadastro());
 		
 		Usuario usuario = usuarioService
 			.obterPorId(dto.getUsuario())
-			.orElseThrow(  () -> new RegraNegocioException("Usuário não encontrado para o Id Informado."));                        
-		
+			.orElseThrow(  () -> new RegraNegocioException("Usuário não encontrado para o Id Informado."));
+
 		lancamento.setUsuario(usuario);
+		
+		
+		Categoria categoria = categoriaService
+				.obterPorId(dto.getCategoria())
+				.orElseThrow( () -> new RegraNegocioException("Categoria não encontrada para o Id Informado."));
+		
+		lancamento.setCategoria(categoria);
 		
 		
 		if (dto.getTipo() != null) {
