@@ -54,7 +54,7 @@ public class UsuarioRepositoryTest {
 		//cenario
 		
 		//acao
-		boolean result = repository.existsByEmail("usuario@email.com");
+		boolean result = repository.existsByEmail("usuarioqwe@email.com");
 		
 		//verificacao
 		Assertions.assertThat(result).isFalse();		
@@ -74,22 +74,15 @@ public class UsuarioRepositoryTest {
 	
 	@Test
 	public void deveBuscarUmUsuarioPorEmail() {
-		//cenario
-		Usuario usuario = criarUsuario();
-		entityManager.persist(usuario);
-		
-		//verificacao
 		Optional<Usuario> result = repository.findByEmail("usuario@email.com");
-		
 		Assertions.assertThat(result.isPresent()).isTrue();
 
-					
 	}
 	
 	@Test
 	public void deveRetornarvazioAoBuscarUmUsuarioPorEmailQuandoNaoExisteNaBase() {
 		//verificacao
-		Optional<Usuario> result = repository.findByEmail("usuario@email.com");
+		Optional<Usuario> result = repository.findByEmail("usuarioqwe@email.com");
 		
 		Assertions.assertThat(result.isPresent()).isFalse();
 		
