@@ -75,15 +75,15 @@ public class CsvResource {
 				CsvDTO linhaLancamento = new CsvDTO();
 
 				String[] vect = line.split(",");
-				linhaLancamento.setDESC(vect[0]);
-				linhaLancamento.setVALOR_LANC(vect[1].replace("$", ""));
-				linhaLancamento.setTIPO(vect[2]);
-				linhaLancamento.setSTATUS(vect[3]);
-				linhaLancamento.setUSUARIO(vect[4]);
-				linhaLancamento.setDATA_LANC(vect[5]);
-				linhaLancamento.setCATEGORIA(vect[6]);
-				linhaLancamento.setLAT(vect[7]);
-				linhaLancamento.setLONG(vect[8]);
+				linhaLancamento.setDescricao(vect[0]);
+				linhaLancamento.setValorLancamento(vect[1].replace("$", ""));
+				linhaLancamento.setTipo(vect[2]);
+				linhaLancamento.setStatus(vect[3]);
+				linhaLancamento.setUsuario(vect[4]);
+				linhaLancamento.setDataLancamento(vect[5]);
+				linhaLancamento.setCategoria(vect[6]);
+				linhaLancamento.setLatitude(vect[7]);
+				linhaLancamento.setLongitude(vect[8]);
 				
 				if(validarLinha(linhaLancamento)) {
 					list.add(linhaLancamento);
@@ -156,7 +156,8 @@ public class CsvResource {
         DateTimeFormatter formatador = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String carimbo = localDateTimeAtual.format(formatador);
         String nomeArquivo = "lancamento_" + carimbo + ".json";
-        File file = new File("C:\\Users\\MURALIS\\Downloads\\" + nomeArquivo);
+        String home = System.getProperty("user.home");
+        File file = new File(home+ "/Downloads/"+ nomeArquivo);
         
         //Criando arquivo
 		criarArquivo(file, lancamentosResultado);
@@ -220,35 +221,35 @@ public class CsvResource {
 	
 	public boolean validarLinha(CsvDTO linhaLancamento) {
 		
-		if (linhaLancamento.getUSUARIO().isEmpty() || !linhaLancamento.getUSUARIO().matches("\\d+")) {
+		if (linhaLancamento.getUsuario().isEmpty() || !linhaLancamento.getUsuario().matches("\\d+")) {
 			return false;
 		}
 		
-		if (!linhaLancamento.getSTATUS().equals("PENDENTE") && !linhaLancamento.getSTATUS().equals("CANCELADO") && !linhaLancamento.getSTATUS().equals("EFETIVADO")) {
+		if (!linhaLancamento.getStatus().equals("PENDENTE") && !linhaLancamento.getStatus().equals("CANCELADO") && !linhaLancamento.getStatus().equals("EFETIVADO")) {
 			return false;
 		}
 
-		if (!linhaLancamento.getTIPO().equals("DESPESA") && !linhaLancamento.getTIPO().equals("RECEITA")) {
+		if (!linhaLancamento.getTipo().equals("DESPESA") && !linhaLancamento.getTipo().equals("RECEITA")) {
 			return false;
 		}
 		
-		if (!linhaLancamento.getTIPO().equals("DESPESA") && !linhaLancamento.getTIPO().equals("RECEITA")) {
+		if(!usuarioService.obterPorId(Long.parseLong(linhaLancamento.getUsuario())).isPresent()) {
 			return false;
 		}
 		
-		if (linhaLancamento.getVALOR_LANC().isEmpty() || Double.parseDouble(linhaLancamento.getVALOR_LANC()) <= 0) {
+		if (linhaLancamento.getValorLancamento().isEmpty() || Double.parseDouble(linhaLancamento.getValorLancamento()) <= 0) {
 			return false;
 		}
 
-		if (linhaLancamento.getDESC().isEmpty() || linhaLancamento.getDESC().length() > 100 || linhaLancamento.getDESC().trim().isEmpty()) {
+		if (linhaLancamento.getDescricao().isEmpty() || linhaLancamento.getDescricao().codePointCount(0, linhaLancamento.getDescricao().length())  > 100 || linhaLancamento.getDescricao().trim().isEmpty()) {
 			return false;
 		}
 		
-		if (linhaLancamento.getLAT().isEmpty() || linhaLancamento.getLAT().length() > 12 || Double.parseDouble(linhaLancamento.getLAT()) > 90 || Double.parseDouble(linhaLancamento.getLAT()) < -90) {
+		if (linhaLancamento.getLatitude().isEmpty() || linhaLancamento.getLatitude().length() > 12 || Double.parseDouble(linhaLancamento.getLatitude()) > 90 || Double.parseDouble(linhaLancamento.getLatitude()) < -90) {
 			return false;
 		}
 		
-		if (linhaLancamento.getLONG().isEmpty() || linhaLancamento.getLONG().length() > 13 || Double.parseDouble(linhaLancamento.getLONG()) > 180 || Double.parseDouble(linhaLancamento.getLONG()) < -180) {
+		if (linhaLancamento.getLongitude().isEmpty() || linhaLancamento.getLongitude().length() > 13 || Double.parseDouble(linhaLancamento.getLongitude()) > 180 || Double.parseDouble(linhaLancamento.getLongitude()) < -180) {
 			return false;
 		}
 		
@@ -273,52 +274,38 @@ public class CsvResource {
 			lancamento.setDataCadastro(LocalDate.parse(LocalDate.now().format(formatoDataCriacao)));
 			
 			//Descrição
-			lancamento.setDescricao(csvDTO.getDESC());
+			lancamento.setDescricao(csvDTO.getDescricao());
 			
 			//Usuário
-			Optional<Usuario> obterPorId = usuarioService.obterPorId(Long.parseLong(csvDTO.getUSUARIO()));
-			try {
-				Usuario usuario = obterPorId.get();
-				lancamento.setUsuario(usuario);
-
-			}catch (RegraNegocioException e) {
-				e.getMessage();
-			}
-			
+			Optional<Usuario> obterPorId = usuarioService.obterPorId(Long.parseLong(csvDTO.getUsuario()));
+			Usuario usuario = obterPorId.get();
+			lancamento.setUsuario(usuario);
 
 			//Mês e Ano
-			try {
-				LocalDate data = LocalDate.parse(csvDTO.getDATA_LANC(), formatoEntrada);
-				
-				int mes = data.getMonthValue();
-				lancamento.setMes(mes);
-				
-		        int ano = data.getYear();
-	            lancamento.setAno(ano);
-
-			} catch (Exception e) {
-				e.getMessage();
-			}
+			LocalDate data = LocalDate.parse(csvDTO.getDataLancamento(), formatoEntrada);
+			int mes = data.getMonthValue();
+			lancamento.setMes(mes);
+	        int ano = data.getYear();
+            lancamento.setAno(ano);
 
 			//Valor
-			lancamento.setValor(new BigDecimal(csvDTO.getVALOR_LANC()));
+			lancamento.setValor(new BigDecimal(csvDTO.getValorLancamento()));
 			
 			//Latitude
-			lancamento.setLatitude(csvDTO.getLAT());
+			lancamento.setLatitude(csvDTO.getLatitude());
 			
 			//Longitude
-			lancamento.setLongitude(csvDTO.getLONG());
+			lancamento.setLongitude(csvDTO.getLongitude());
 			
 			//Categoria
-			
-			if(csvDTO.getCATEGORIA() == null || csvDTO.getCATEGORIA().isEmpty()) {
+			if(csvDTO.getCategoria() == null || csvDTO.getCategoria().isEmpty()) {
 				lancamento.setCategoria(null);
 			}else {
-				Optional<Categoria> categoriaBuscada = categoriaService.obterPorDescricao(csvDTO.getCATEGORIA());
+				Optional<Categoria> categoriaBuscada = categoriaService.obterPorDescricao(csvDTO.getCategoria());
 				if(categoriaBuscada == null) {
 					Categoria novaCategoria = new Categoria();
-					novaCategoria.setDescricao(csvDTO.getCATEGORIA());
-					lancamento.setCategoria(categoriaBuscada.get());
+					novaCategoria.setDescricao(csvDTO.getCategoria());
+					lancamento.setCategoria(novaCategoria);
 					categoriaService.salvar(novaCategoria);
 				}else {
 					lancamento.setCategoria(categoriaBuscada.get());
@@ -328,10 +315,10 @@ public class CsvResource {
 			
 			
 			//Tipo
-			lancamento.setTipo(TipoLancamento.valueOf(csvDTO.getTIPO()));
+			lancamento.setTipo(TipoLancamento.valueOf(csvDTO.getTipo()));
 			
 			//Status
-			lancamento.setStatus(StatusLancamento.valueOf(csvDTO.getSTATUS()));
+			lancamento.setStatus(StatusLancamento.valueOf(csvDTO.getStatus()));
 
 			//Adiciona item convertido
 			listaLancamentosConvertidos.add(lancamento);

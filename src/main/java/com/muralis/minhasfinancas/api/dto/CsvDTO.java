@@ -14,15 +14,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CsvDTO {
 	
-	private String DESC;
-	private String VALOR_LANC;
-	private String TIPO;
-	private String STATUS;
-	private String USUARIO;
-	private String DATA_LANC;
-	private String CATEGORIA;
-	private String LAT;
-	private String LONG;
+	private String descricao;
+	private String valorLancamento;
+	private String tipo;
+	private String status;
+	private String usuario;
+	private String dataLancamento;
+	private String categoria;
+	private String latitude;
+	private String longitude;
 	
 
 }
