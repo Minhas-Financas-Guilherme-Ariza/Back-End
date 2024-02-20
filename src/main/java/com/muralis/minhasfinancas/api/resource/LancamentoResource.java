@@ -184,12 +184,13 @@ public class LancamentoResource {
 
 		lancamento.setUsuario(usuario);
 		
-		
-		Categoria categoria = categoriaService
-				.obterPorId(dto.getCategoria())
-				.orElseThrow( () -> new RegraNegocioException("Categoria não encontrada para o Id Informado."));
-		
-		lancamento.setCategoria(categoria);
+		if(dto.getCategoria() != null) {
+			Categoria categoria = categoriaService
+					.obterPorId(dto.getCategoria())
+					.orElseThrow( () -> new RegraNegocioException("Categoria não encontrada para o Id Informado."));
+			lancamento.setCategoria(categoria);
+
+		}
 		
 		
 		if (dto.getTipo() != null) {
