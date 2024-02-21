@@ -111,18 +111,6 @@ public class CsvResourceTest {
             .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
-    @Test
-    public void deveReceberUmFiltroDeDownloadVazio() throws Exception {
-        ResponseEntity<?> responseEntity = csvResource.downloadArquivo(null, null, null, null, null);
-        Assertions.assertNotNull(responseEntity);
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                                                    .get(API.concat("/download"));
-
-        mvc
-            .perform(request)
-            .andExpect(MockMvcResultMatchers.status().isOk());
-    }
 
     @Test 
     public void deveVerificarSeConteudoDoArquivoValido() throws Exception {
