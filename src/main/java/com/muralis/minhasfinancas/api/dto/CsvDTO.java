@@ -8,25 +8,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LancamentoDTO {
+public class CsvDTO {
 	
-	private Long id;
 	private String descricao;
-	private Integer mes;
-	private Integer ano;
-	private BigDecimal valor;
-	private Long usuario;
-	private Long categoria;
+	private String valorLancamento;
 	private String tipo;
 	private String status;
+	private String usuario;
+	private String dataLancamento;
+	private String categoria;
 	private String latitude;
 	private String longitude;
-	private LocalDate dataCadastro;
 	
 
 }

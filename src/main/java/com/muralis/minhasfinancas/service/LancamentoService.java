@@ -25,4 +25,6 @@ public interface LancamentoService {
 	
 	BigDecimal obterSaldoPorUsuario(Long id);
 
+	List<Lancamento> salvarComStatus(List<Lancamento> lancamentos);
+
 }

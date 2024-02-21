@@ -1,5 +1,6 @@
 package com.muralis.minhasfinancas.model.entity;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,38 +8,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import lombok.Setter;
 
 @Entity
-@Table(name = "usuario", schema = "financas")
+@Table(name = "categoria", schema = "financas")
 @Builder
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class Usuario {
+@NoArgsConstructor
+public class Categoria {
 	
 	@Id
-	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Long id;
 	
-	@Column(name = "nome")
-	private String nome;
+	@Column(name = "descricao")
+	private String descricao;
 	
-	@Column(name = "email")
-	@JsonIgnore
-	private String email;
-	
-	@Column(name = "senha")
-	@JsonIgnore
-	private String senha;
-	
+	@Column(name = "ativo")
+	private boolean ativo = true;
 	
 
 }
