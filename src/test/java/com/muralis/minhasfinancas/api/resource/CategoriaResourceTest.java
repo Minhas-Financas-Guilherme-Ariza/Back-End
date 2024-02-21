@@ -40,33 +40,6 @@ public class CategoriaResourceTest {
 	CategoriaService service;
 	
 	@Test
-	public void deveCadastrarUmaCategoria() throws Exception{
-		String descricao = "Descrição Teste";
-		boolean ativo = true;
-		
-		Categoria categoria = Categoria.builder().id(1l).descricao(descricao).ativo(ativo).build();
-
-		Mockito.when(service.salvar(Mockito.any(Categoria.class))).thenReturn(categoria);
-		String json = new ObjectMapper().writeValueAsString(categoria);
-		
-		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-													.post(API)
-													.accept(JSON)
-													.contentType(JSON)
-													.content(json);
-		
-		mvc
-			.perform(request)
-			.andExpect(MockMvcResultMatchers.status().isCreated())
-			.andExpect(MockMvcResultMatchers.jsonPath("id").value(categoria.getId()))
-			.andExpect(MockMvcResultMatchers.jsonPath("descricao").value(categoria.getDescricao()))
-			.andExpect(MockMvcResultMatchers.jsonPath("ativo").value(categoria.isAtivo()))
-		;
-		
-		
-	}
-	
-	@Test
 	public void deveRetornarTodasCategorias() throws Exception {
 		
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders

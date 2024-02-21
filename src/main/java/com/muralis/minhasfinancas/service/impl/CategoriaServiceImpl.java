@@ -37,7 +37,7 @@ public class CategoriaServiceImpl implements CategoriaService{
 			throw new RegraNegocioException("Preencha o campo de Descrição.");
 		}
 		
-		if(categoria.getDescricao().length() >  255){
+		if(categoria.getDescricao().codePointCount(0, categoria.getDescricao().length()) >  255){
 			throw new RegraNegocioException("O limite de caracteres desse campo é 255.");
 		}
 		
