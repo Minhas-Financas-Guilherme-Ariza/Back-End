@@ -2,20 +2,22 @@ package com.muralis.minhasfinancas.api.resource;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,9 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.muralis.minhasfinancas.api.dto.CsvDTO;
 import com.muralis.minhasfinancas.model.entity.Categoria;
 import com.muralis.minhasfinancas.model.entity.Lancamento;
@@ -34,7 +33,6 @@ import com.muralis.minhasfinancas.model.enums.TipoLancamento;
 import com.muralis.minhasfinancas.service.CategoriaService;
 import com.muralis.minhasfinancas.service.CsvService;
 import com.muralis.minhasfinancas.service.LancamentoService;
-import com.muralis.minhasfinancas.service.UsuarioService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -49,7 +47,7 @@ public class CsvResource {
 	private final CsvService csvService;
 	
 	@PostMapping(value = "/upload" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<?> uploadArquivo(@RequestParam MultipartFile file){
+	public ResponseEntity<?> uploadArquivo( @RequestParam MultipartFile file){
 		
 		if (!csvService.verificarConteudoArquivo(file)) {
 			return new ResponseEntity("O arquivo está vazio.", HttpStatus.BAD_REQUEST);
@@ -63,9 +61,13 @@ public class CsvResource {
 			
 			String line = br.readLine();
 			line = br.readLine();
+			Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+			
+			int linhas = 1;
 			
 			while (line != null ) {
 				CsvDTO linhaLancamento = new CsvDTO();
+                System.out.println(linhas);
 
 				String[] vect = line.split(",");
 				linhaLancamento.setDescricao(vect[0]);
@@ -78,15 +80,16 @@ public class CsvResource {
 				linhaLancamento.setLatitude(vect[7]);
 				linhaLancamento.setLongitude(vect[8]);
 				
-				if(csvService.validarLinha(linhaLancamento)) {
-					list.add(linhaLancamento);
-					lancamentosComSucesso++;
-					line = br.readLine();
-
-				}else {
-					lancamentosComErro++;
-					line = br.readLine();
-				}
+	            if (!validator.validate(linhaLancamento).isEmpty()) {
+	                
+	                lancamentosComErro++;
+	                line = br.readLine();
+	            } else {
+	                list.add(linhaLancamento);
+	                lancamentosComSucesso++;
+	                line = br.readLine();
+	            }
+	            linhas++;
 			}	
 			
 			//Verificação de todas linhas inválidas
@@ -100,6 +103,8 @@ public class CsvResource {
 			//Converte a lista de csvDTO para Lista Lançamento e salva no banco de dados
 			List<Lancamento> listaConvertida = csvService.converterCsvDtoEMLancamento(list);
 			lancamentoService.salvarComStatus(listaConvertida);
+			
+			
 			
 			return ResponseEntity.ok(response);
 			

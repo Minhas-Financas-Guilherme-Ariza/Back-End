@@ -110,43 +110,6 @@ public class CsvServiceImpl implements CsvService{
 			return listaLancamentosConvertidos;
 		}
 
-	@Override
-	public boolean validarLinha(CsvDTO linhaLancamento) {
-			
-		if (linhaLancamento.getUsuario().isEmpty() || !linhaLancamento.getUsuario().matches("\\d+")) {
-			return false;
-		}
-		
-		if (!linhaLancamento.getStatus().equals("PENDENTE") && !linhaLancamento.getStatus().equals("CANCELADO") && !linhaLancamento.getStatus().equals("EFETIVADO")) {
-			return false;
-		}
-
-		if (!linhaLancamento.getTipo().equals("DESPESA") && !linhaLancamento.getTipo().equals("RECEITA")) {
-			return false;
-		}
-		
-		if(!usuarioService.obterPorId(Long.parseLong(linhaLancamento.getUsuario())).isPresent()) {
-			return false;
-		}
-		
-		if (linhaLancamento.getValorLancamento().isEmpty() || Double.parseDouble(linhaLancamento.getValorLancamento()) <= 0) {
-			return false;
-		}
-
-		if (linhaLancamento.getDescricao().isEmpty() || linhaLancamento.getDescricao().codePointCount(0, linhaLancamento.getDescricao().length())  > 100 || linhaLancamento.getDescricao().trim().isEmpty()) {
-			return false;
-		}
-		
-		if (linhaLancamento.getLatitude().isEmpty() || linhaLancamento.getLatitude().length() > 12 || Double.parseDouble(linhaLancamento.getLatitude()) > 90 || Double.parseDouble(linhaLancamento.getLatitude()) < -90) {
-			return false;
-		}
-		
-		if (linhaLancamento.getLongitude().isEmpty() || linhaLancamento.getLongitude().length() > 13 || Double.parseDouble(linhaLancamento.getLongitude()) > 180 || Double.parseDouble(linhaLancamento.getLongitude()) < -180) {
-			return false;
-		}
-		
-		return true;
-	}
 
 	@Override
 	public boolean verificarConteudoArquivo(MultipartFile multipartFile) {

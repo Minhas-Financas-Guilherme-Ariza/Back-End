@@ -12,8 +12,6 @@ public interface CsvService {
 
 	List<Lancamento> converterCsvDtoEMLancamento(List<CsvDTO> listaCsvDTO);
 	
-	boolean validarLinha(CsvDTO linhaLancamento);
-	
 	boolean verificarConteudoArquivo(MultipartFile multipartFile);
 	
 	File criarArquivo(File arquivo, List<Lancamento> lancamentos);
