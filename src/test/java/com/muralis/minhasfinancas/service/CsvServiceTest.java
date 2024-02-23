@@ -15,9 +15,5 @@ public class CsvServiceTest {
 	@SpyBean
 	CsvServiceImpl service;
 	
-	@Test
-	public void deveConverterCsvDtoEMLancamento() {
-		
-	}
 	
 }
