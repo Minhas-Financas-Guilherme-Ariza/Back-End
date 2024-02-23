@@ -67,7 +67,6 @@ public class CsvResource {
 			
 			while (line != null ) {
 				CsvDTO linhaLancamento = new CsvDTO();
-                System.out.println(linhas);
 
 				String[] vect = line.split(",");
 				linhaLancamento.setDescricao(vect[0]);

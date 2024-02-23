@@ -2,13 +2,10 @@ package com.muralis.minhasfinancas.api.dto;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 import com.muralis.minhasfinancas.api.validation.MaxCodePoints;
-import com.muralis.minhasfinancas.api.validation.StatusPendente;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +30,6 @@ public class CsvDTO {
 	@NotEmpty
 	private String tipo;
 	
-	@StatusPendente
 	private String status;
 	
 	@Pattern(regexp = "\\d+")
