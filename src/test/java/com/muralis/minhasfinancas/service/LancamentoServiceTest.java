@@ -290,7 +290,7 @@ public class LancamentoServiceTest {
     }
 	
 	 @Test
-	    public void deveObterSaldoPorUsuario() {
+     public void deveObterSaldoPorUsuario() {
 	        BigDecimal receitas = new BigDecimal("100.00");
 	        BigDecimal despesas = new BigDecimal("50.00");
 
@@ -300,10 +300,10 @@ public class LancamentoServiceTest {
 	        BigDecimal saldo = service.obterSaldoPorUsuario(1L);
 
 	        assertEquals(new BigDecimal("50.00"), saldo);
-	    }
+	 }
 	 
 	 @Test
-	    public void deveObterSaldoPorUsuarioSemDespesas() {
+ 	 public void deveObterSaldoPorUsuarioSemDespesas() {
 		 
 	        BigDecimal receitas = new BigDecimal("100.00");
 	        BigDecimal despesas = null;
@@ -314,21 +314,21 @@ public class LancamentoServiceTest {
 	        BigDecimal saldo = service.obterSaldoPorUsuario(1L);
 
 	        assertEquals(new BigDecimal("100.00"), saldo);
-	    }
+	 }
 
-	    @Test
-	    public void deveObterSaldoPorUsuarioSemReceitasEDespesas() {
+    @Test
+    public void deveObterSaldoPorUsuarioSemReceitasEDespesas() {
 
-	    	BigDecimal receitas = null;
-	        BigDecimal despesas = null;
+    	BigDecimal receitas = null;
+        BigDecimal despesas = null;
 
-	        when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.RECEITA), eq(StatusLancamento.EFETIVADO))).thenReturn(receitas);
-	        when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.DESPESA), eq(StatusLancamento.EFETIVADO))).thenReturn(despesas);
+        when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.RECEITA), eq(StatusLancamento.EFETIVADO))).thenReturn(receitas);
+        when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.DESPESA), eq(StatusLancamento.EFETIVADO))).thenReturn(despesas);
 
-	        BigDecimal saldo = service.obterSaldoPorUsuario(1L);
+        BigDecimal saldo = service.obterSaldoPorUsuario(1L);
 
-	        assertEquals(BigDecimal.ZERO, saldo);
-	    }
+        assertEquals(BigDecimal.ZERO, saldo);
+    }
 	
 	
 	

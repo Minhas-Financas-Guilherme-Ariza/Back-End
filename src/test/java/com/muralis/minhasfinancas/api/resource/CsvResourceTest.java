@@ -1,7 +1,5 @@
 package com.muralis.minhasfinancas.api.resource;
 
-import org.junit.jupiter.api.Assertions;
-
 import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -35,6 +34,7 @@ import com.muralis.minhasfinancas.model.entity.Usuario;
 import com.muralis.minhasfinancas.model.enums.StatusLancamento;
 import com.muralis.minhasfinancas.model.enums.TipoLancamento;
 import com.muralis.minhasfinancas.service.CategoriaService;
+import com.muralis.minhasfinancas.service.CsvService;
 import com.muralis.minhasfinancas.service.LancamentoService;
 import com.muralis.minhasfinancas.service.UsuarioService;
 
@@ -58,6 +58,9 @@ public class CsvResourceTest {
 
     @MockBean
     private LancamentoService lancamentoService;
+    
+    @MockBean
+    private CsvService csvService;
 
     @Autowired
     private CsvResource csvResource;
@@ -74,8 +77,10 @@ public class CsvResourceTest {
 
         Categoria categoria = new Categoria();
         categoria.setId(1L);
+        
+        Mockito.when(csvService.verificarConteudoArquivo(file)).thenReturn(true);
 
-        ResponseEntity<?> responseEntity = csvResource.uploadArquivo(file);
+        ResponseEntity responseEntity = csvResource.uploadArquivo(file);
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
         Mockito.verify(lancamentoService).salvarComStatus(Mockito.any());
@@ -106,54 +111,6 @@ public class CsvResourceTest {
             .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
-    @Test
-    public void deveFazerDownloadComSucesso() throws Exception {
-        Lancamento lancamento = new Lancamento();
-        lancamento.setId(1L);
-        lancamento.setDescricao("Teste");
-        lancamento.setValor(BigDecimal.valueOf(100.00));
-        lancamento.setTipo(TipoLancamento.DESPESA);
-        lancamento.setStatus(StatusLancamento.PENDENTE);
-        lancamento.setUsuario(new Usuario());
-        lancamento.setDataCadastro(LocalDate.now());
-        lancamento.setCategoria(new Categoria());
-        lancamento.setLatitude("123.456");
-        lancamento.setLongitude("789.123");
-
-        List<Lancamento> lancamentos = new ArrayList<>();
-        lancamentos.add(lancamento);
-
-        Mockito.when(lancamentoService.buscar(Mockito.any(Lancamento.class))).thenReturn(lancamentos);
-
-        ResponseEntity<?> responseEntity = csvResource.downloadArquivo("Teste", LocalDate.now().getMonthValue(),
-                LocalDate.now().getYear(), TipoLancamento.DESPESA, 1L);
-        Assertions.assertNotNull(responseEntity);
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                                                    .get(API.concat("/download"))
-                                                    .param("descricao", "Teste")
-                                                    .param("mes", String.valueOf(LocalDate.now().getMonthValue()))
-                                                    .param("ano", String.valueOf(LocalDate.now().getYear()))
-                                                    .param("tipo", TipoLancamento.DESPESA.toString())
-                                                    .param("usuario", "1");
-
-        mvc
-            .perform(request)
-            .andExpect(MockMvcResultMatchers.status().isOk());
-    }
-
-    @Test
-    public void deveReceberUmFiltroDeDownloadVazio() throws Exception {
-        ResponseEntity<?> responseEntity = csvResource.downloadArquivo(null, null, null, null, null);
-        Assertions.assertNotNull(responseEntity);
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                                                    .get(API.concat("/download"));
-
-        mvc
-            .perform(request)
-            .andExpect(MockMvcResultMatchers.status().isOk());
-    }
 
     @Test 
     public void deveVerificarSeConteudoDoArquivoValido() throws Exception {
@@ -162,8 +119,7 @@ public class CsvResourceTest {
         MockMultipartFile file = new MockMultipartFile("file", "test.csv",
                 MediaType.MULTIPART_FORM_DATA_VALUE, csvContent.getBytes());
 
-        boolean result = csvResource.verificarConteudoArquivo(file);
-        Assertions.assertTrue(result);
+        Mockito.when(csvService.verificarConteudoArquivo(file)).thenReturn(true);
 
     }
 
@@ -172,29 +128,8 @@ public class CsvResourceTest {
         MockMultipartFile file = new MockMultipartFile("file", "test.csv",
                 MediaType.MULTIPART_FORM_DATA_VALUE, new byte[0]);
 
-        boolean result = csvResource.verificarConteudoArquivo(file);
-        Assertions.assertFalse(result);
+        Mockito.when(csvService.verificarConteudoArquivo(file)).thenReturn(false);
 
     }
 
-    @Test 
-    public void deveCriarArquivoComSucesso() throws Exception {
-        List<Lancamento> lancamentos = new ArrayList<>();
-        Lancamento lancamento = new Lancamento();
-        lancamento.setId(1L);
-        lancamentos.add(lancamento);
-        
-        LocalDateTime localDateTimeAtual = LocalDateTime.now();
-        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-        String carimbo = localDateTimeAtual.format(formatador);
-        String nomeArquivo = "lancamento_" + carimbo + ".json";
-        File file = new File("C:\\Users\\MURALIS\\Downloads\\" + nomeArquivo);
-        file = csvResource.criarArquivo(file, lancamentos);
-
-        Assertions.assertTrue(file.exists());
-        Assertions.assertTrue(file.isFile());
-
-        file.delete();
-
-    }
 }

@@ -34,7 +34,7 @@ public class CategoriaResource {
 		
 		List<Categoria> resultadoCategorias = categoriaService.buscar();
 		
-		return new ResponseEntity(resultadoCategorias, HttpStatus.FOUND);
+		return new ResponseEntity(resultadoCategorias, HttpStatus.OK);
 	}
 
 }

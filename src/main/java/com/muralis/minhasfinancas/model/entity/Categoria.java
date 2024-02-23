@@ -16,9 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Getter
 @Table(name = "categoria", schema = "financas")
-@Setter
 @Builder
 @Data
 @AllArgsConstructor

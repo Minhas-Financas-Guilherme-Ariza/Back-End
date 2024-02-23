@@ -1,10 +1,14 @@
 package com.muralis.minhasfinancas.api.resource;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,8 +50,13 @@ public class UsuarioResource {
 		}
 	}
 	
-	@PostMapping()
-	public ResponseEntity salvar(@RequestBody UsuarioDTO dto) {
+	@PostMapping
+	public ResponseEntity salvar(@Valid @RequestBody UsuarioDTO dto, BindingResult result) {
+		
+		if (result.hasErrors()) {
+	        String mensagemDeErro = result.getFieldError("email").getDefaultMessage();
+	        return ResponseEntity.badRequest().body(Collections.singletonMap("mensagem", mensagemDeErro));
+	    }
 		
 		Usuario usuario = Usuario.builder()
 				.nome(dto.getNome())
