@@ -74,6 +74,9 @@ public class UsuarioRepositoryTest {
 	
 	@Test
 	public void deveBuscarUmUsuarioPorEmail() {
+		Usuario usuario = criarUsuario();
+		
+		Usuario usuarioSalvo = repository.save(usuario);
 		Optional<Usuario> result = repository.findByEmail("usuario@email.com");
 		Assertions.assertThat(result.isPresent()).isTrue();
 
