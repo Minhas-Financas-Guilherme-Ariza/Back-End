@@ -95,6 +95,7 @@ public class CsvResource {
 			String response;
 			if(lancamentosComSucesso == 0) {
 				response = "Todas as linhas do arquivo são inválidas, total de linhas com erro: " +lancamentosComErro;
+				return ResponseEntity.badRequest().body(response);
 			}else {
 				response = "Linhas com sucesso: " +lancamentosComSucesso+ "\nLinhas com erro: " +lancamentosComErro;
 			}
