@@ -8,16 +8,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,13 +76,13 @@ public class CsvResource {
 				linhaLancamento.setLatitude(vect[7]);
 				linhaLancamento.setLongitude(vect[8]);
 				
-	            if (!validator.validate(linhaLancamento).isEmpty()) {
-	                
-	                lancamentosComErro++;
-	                line = br.readLine();
-	            } else {
-	                list.add(linhaLancamento);
+	            if (validator.validate(linhaLancamento).isEmpty()) {
+	            	list.add(linhaLancamento);
 	                lancamentosComSucesso++;
+	                line = br.readLine();
+	                
+	            } else {
+	                lancamentosComErro++;
 	                line = br.readLine();
 	            }
 	            linhas++;

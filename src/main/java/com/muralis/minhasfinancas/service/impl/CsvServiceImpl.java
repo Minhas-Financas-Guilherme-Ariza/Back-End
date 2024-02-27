@@ -100,10 +100,10 @@ public class CsvServiceImpl implements CsvService{
 				lancamento.setTipo(TipoLancamento.valueOf(csvDTO.getTipo()));
 				
 				//Status
-				if(csvDTO.getStatus() == null || csvDTO.getStatus() != "EFETIVADO"|| csvDTO.getStatus() != "CANCELADO"|| csvDTO.getStatus() != "PENDENTE") {
-					lancamento.setStatus(StatusLancamento.PENDENTE);
-				} else {
+				
+				if(!csvDTO.getStatus().isEmpty() || csvDTO.getStatus() == null) {
 					lancamento.setStatus(StatusLancamento.valueOf(csvDTO.getStatus()));
+
 				}
 	
 				//Adiciona item convertido
@@ -177,5 +177,6 @@ public class CsvServiceImpl implements CsvService{
 				).allMatch(elemento -> elemento);
 		
 	}
+
 
 }

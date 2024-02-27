@@ -20,4 +20,5 @@ public interface CsvService {
 	
 	boolean filtroVazio(Lancamento lancamentoFiltro);
 	
+	
 }

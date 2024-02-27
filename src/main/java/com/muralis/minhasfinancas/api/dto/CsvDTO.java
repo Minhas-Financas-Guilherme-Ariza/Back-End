@@ -6,9 +6,11 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 import com.muralis.minhasfinancas.api.validation.MaxCodePoints;
+import com.muralis.minhasfinancas.model.enums.StatusLancamento;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -30,7 +32,9 @@ public class CsvDTO {
 	@NotEmpty
 	private String tipo;
 	
-	private String status;
+	@Pattern(regexp = "^(EFETIVADO|CANCELADO|PENDENTE)?$")
+	@Default
+	private String status = String.valueOf(StatusLancamento.PENDENTE);
 	
 	@Pattern(regexp = "\\d+")
 	@NotEmpty
@@ -50,6 +54,13 @@ public class CsvDTO {
 	@MaxCodePoints(value = 13)
 	@NotEmpty
 	private String longitude;
+	
+	
+	public void setStatus(String status) {
+		if(!status.isEmpty()) {
+			this.status = status;
+		}
+	}
 	
 
 }
