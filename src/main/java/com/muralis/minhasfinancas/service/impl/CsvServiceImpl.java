@@ -100,10 +100,7 @@ public class CsvServiceImpl implements CsvService{
 				lancamento.setTipo(TipoLancamento.valueOf(csvDTO.getTipo()));
 				
 				//Status
-				
-				if(!csvDTO.getStatus().isEmpty() || csvDTO.getStatus() == null) {
-					lancamento.setStatus(StatusLancamento.valueOf(csvDTO.getStatus()));
-				}
+				lancamento.setStatus(StatusLancamento.valueOf(csvDTO.getStatus()));
 	
 				//Adiciona item convertido
 				listaLancamentosConvertidos.add(lancamento);

@@ -57,9 +57,9 @@ public class CsvDTO {
 	
 	
 	public void setStatus(String status) {
-		if(!status.isEmpty()) {
-			this.status = status;
-		}
+		if(status == null || status.isEmpty()) return;
+		this.status = status;
+		
 	}
 	
 
