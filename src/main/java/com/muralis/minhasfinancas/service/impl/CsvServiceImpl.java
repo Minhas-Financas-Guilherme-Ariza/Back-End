@@ -86,7 +86,7 @@ public class CsvServiceImpl implements CsvService{
 					lancamento.setCategoria(null);
 				}else {
 					Optional<Categoria> categoriaBuscada = categoriaService.obterPorDescricao(csvDTO.getCategoria());
-					if(categoriaBuscada == null) {
+					if(!categoriaBuscada.isPresent()) {
 						Categoria novaCategoria = new Categoria();
 						novaCategoria.setDescricao(csvDTO.getCategoria());
 						lancamento.setCategoria(novaCategoria);

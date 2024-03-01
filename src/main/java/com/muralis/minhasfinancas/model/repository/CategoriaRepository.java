@@ -13,6 +13,8 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long>{
 	
 	Optional<Categoria> findFirstByDescricao(String descricao);
 	
+	List<Categoria> findAllByAtivoTrue();
+	
 
 	
 }

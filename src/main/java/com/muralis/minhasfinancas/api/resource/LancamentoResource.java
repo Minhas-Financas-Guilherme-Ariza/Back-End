@@ -47,7 +47,7 @@ public class LancamentoResource {
 			@RequestParam(value = "ano", required = false) Integer ano,
 			@RequestParam(value = "tipo", required = false) TipoLancamento tipo,
             @RequestParam(value = "status", required = false) StatusLancamento status,
-			@RequestParam("usuario") Long idUsuario,
+			@RequestParam(value = "usuario") Long idUsuario,
 			@RequestParam(value = "id_categoria", required = false) Long idCategoria,
 			@RequestParam(value = "latitude", required = false) String latitude,
 			@RequestParam(value = "longitude", required = false) String longitude
@@ -61,12 +61,10 @@ public class LancamentoResource {
 		lancamentoFiltro.setLatitude(latitude);	
 		lancamentoFiltro.setLongitude(longitude);	
 		
+		
 		Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
-		if(!usuario.isPresent()) {
-			return ResponseEntity.badRequest().body("Usuário não encontrado para o Id Informado.");
-		}else {
-			lancamentoFiltro.setUsuario(usuario.get());
-		}
+		lancamentoFiltro.setUsuario(usuario.get());
+
 
 		if(idCategoria != null) {
 			Optional<Categoria> categoria = categoriaService.obterPorId(idCategoria);
