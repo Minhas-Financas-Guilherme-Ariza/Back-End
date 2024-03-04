@@ -35,63 +35,56 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/lancamentos")
 @RequiredArgsConstructor
 public class LancamentoResource {
-	
+
 	private final LancamentoService service;
 	private final UsuarioService usuarioService;
 	private final CategoriaService categoriaService;
 
 	@GetMapping
-	public ResponseEntity buscar(			
-			@RequestParam(value = "descricao", required = false) String descricao,
+	public ResponseEntity buscar(@RequestParam(value = "descricao", required = false) String descricao,
 			@RequestParam(value = "mes", required = false) Integer mes,
 			@RequestParam(value = "ano", required = false) Integer ano,
 			@RequestParam(value = "tipo", required = false) TipoLancamento tipo,
-            @RequestParam(value = "status", required = false) StatusLancamento status,
+			@RequestParam(value = "status", required = false) StatusLancamento status,
 			@RequestParam(value = "usuario") Long idUsuario,
 			@RequestParam(value = "id_categoria", required = false) Long idCategoria,
 			@RequestParam(value = "latitude", required = false) String latitude,
-			@RequestParam(value = "longitude", required = false) String longitude
-			) {
+			@RequestParam(value = "longitude", required = false) String longitude) {
 		Lancamento lancamentoFiltro = new Lancamento();
 		lancamentoFiltro.setDescricao(descricao);
 		lancamentoFiltro.setMes(mes);
 		lancamentoFiltro.setAno(ano);
 		lancamentoFiltro.setTipo(tipo);
-		lancamentoFiltro.setStatus(status);		
-		lancamentoFiltro.setLatitude(latitude);	
-		lancamentoFiltro.setLongitude(longitude);	
-		
-		
+		lancamentoFiltro.setStatus(status);
+		lancamentoFiltro.setLatitude(latitude);
+		lancamentoFiltro.setLongitude(longitude);
+
 		Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
 		lancamentoFiltro.setUsuario(usuario.get());
 
-
-		if(idCategoria != null) {
+		if (idCategoria != null) {
 			Optional<Categoria> categoria = categoriaService.obterPorId(idCategoria);
-			if(categoria.isPresent()) {
+			if (categoria.isPresent()) {
 				lancamentoFiltro.setCategoria(categoria.get());
 
 			}
 		}
 		List<Lancamento> lancamentos = new ArrayList();
-		
+
 		lancamentos = service.buscar(lancamentoFiltro);
 
 		return ResponseEntity.ok(lancamentos);
-		
-		
-		
+
 	}
 
 	@GetMapping("{id}")
-	public ResponseEntity obterLancamento( @PathVariable("id") Long id) {
-		return service.obterPorId(id)
-				.map( lancamento -> new ResponseEntity(converter(lancamento), HttpStatus.OK))
+	public ResponseEntity obterLancamento(@PathVariable("id") Long id) {
+		return service.obterPorId(id).map(lancamento -> new ResponseEntity(converter(lancamento), HttpStatus.OK))
 				.orElseGet(() -> new ResponseEntity(HttpStatus.NOT_FOUND));
 	}
-	
+
 	@PostMapping
-	public ResponseEntity salvar (@RequestBody LancamentoDTO dto) {
+	public ResponseEntity salvar(@RequestBody LancamentoDTO dto) {
 		try {
 			Lancamento entidade = converter(dto);
 			entidade = service.salvar(entidade);
@@ -100,8 +93,7 @@ public class LancamentoResource {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	
-	
+
 	@PutMapping("{id}")
 	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody LancamentoDTO dto) {
 		return service.obterPorId(id).map(entity -> {
@@ -113,58 +105,48 @@ public class LancamentoResource {
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
-		}).orElseGet(() 
-				-> new ResponseEntity("Lançamento não encontrado na base de dados", HttpStatus.NOT_FOUND));
+		}).orElseGet(() -> new ResponseEntity("Lançamento não encontrado na base de dados", HttpStatus.NOT_FOUND));
 	}
-	
+
 	@PutMapping("{id}/atualiza-status")
 	public ResponseEntity atualizarStatus(@PathVariable Long id, @RequestBody AtualizaStatusDTO dto) {
 		return service.obterPorId(id).map(entity -> {
 			StatusLancamento statusSelecionado = StatusLancamento.valueOf(dto.getStatus());
-			
-			if(statusSelecionado == null) {
+
+			if (statusSelecionado == null) {
 				return ResponseEntity.badRequest().body("não foi possível atualizar o status do lançamento");
 			}
-			
+
 			try {
 				entity.setStatus(statusSelecionado);
 				service.atualizar(entity);
 				return ResponseEntity.ok(entity);
-			}catch(RegraNegocioException e) {
+			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
-		}).orElseGet( () -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
-			
+		}).orElseGet(() -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
+
 	}
-	
+
 	@DeleteMapping("{id}")
 	public ResponseEntity deletar(@PathVariable("id") Long id) {
 		return service.obterPorId(id).map(entity -> {
 			service.deletar(entity);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
-		}).orElseGet( () -> new ResponseEntity("Lançamento não encontrado na base de dados", HttpStatus.BAD_REQUEST));
-		
-		
+		}).orElseGet(() -> new ResponseEntity("Lançamento não encontrado na base de dados", HttpStatus.BAD_REQUEST));
+
 	}
-	
+
 	public LancamentoDTO converter(Lancamento lancamento) {
-		return LancamentoDTO.builder()
-				.id(lancamento.getId())
-				.descricao(lancamento.getDescricao())
-				.valor(lancamento.getValor())
-				.mes(lancamento.getMes())
-				.ano(lancamento.getAno())
-				.status(lancamento.getStatus().name())
-				.tipo(lancamento.getTipo().name())
-				.usuario(lancamento.getUsuario().getId())
-				.categoria(lancamento.getCategoria().getId())
-				.latitude(lancamento.getLatitude())
-				.longitude(lancamento.getLongitude())
-				.dataCadastro(lancamento.getDataCadastro())
-				.build();
-				
+		return LancamentoDTO.builder().id(lancamento.getId()).descricao(lancamento.getDescricao())
+				.valor(lancamento.getValor()).mes(lancamento.getMes()).ano(lancamento.getAno())
+				.status(lancamento.getStatus().name()).tipo(lancamento.getTipo().name())
+				.usuario(lancamento.getUsuario().getId()).categoria(lancamento.getCategoria().getId())
+				.latitude(lancamento.getLatitude()).longitude(lancamento.getLongitude())
+				.dataCadastro(lancamento.getDataCadastro()).build();
+
 	}
-	
+
 	public Lancamento converter(LancamentoDTO dto) {
 		Lancamento lancamento = new Lancamento();
 		lancamento.setId(dto.getId());
@@ -175,31 +157,28 @@ public class LancamentoResource {
 		lancamento.setLatitude(dto.getLatitude());
 		lancamento.setLongitude(dto.getLongitude());
 		lancamento.setDataCadastro(dto.getDataCadastro());
-		
-		Usuario usuario = usuarioService
-			.obterPorId(dto.getUsuario())
-			.orElseThrow(  () -> new RegraNegocioException("Usuário não encontrado para o Id Informado."));
+
+		Usuario usuario = usuarioService.obterPorId(dto.getUsuario())
+				.orElseThrow(() -> new RegraNegocioException("Usuário não encontrado para o Id Informado."));
 
 		lancamento.setUsuario(usuario);
-		
-		if(dto.getCategoria() != null) {
-			Categoria categoria = categoriaService
-					.obterPorId(dto.getCategoria())
-					.orElseThrow( () -> new RegraNegocioException("Categoria não encontrada para o Id Informado."));
+
+		if (dto.getCategoria() != null) {
+			Categoria categoria = categoriaService.obterPorId(dto.getCategoria())
+					.orElseThrow(() -> new RegraNegocioException("Categoria não encontrada para o Id Informado."));
 			lancamento.setCategoria(categoria);
 
 		}
-		
-		
+
 		if (dto.getTipo() != null) {
 			lancamento.setTipo(TipoLancamento.valueOf(dto.getTipo()));
 		}
 		if (dto.getStatus() != null) {
 			lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
 		}
-		
+
 		return lancamento;
-		
+
 	}
 
 }

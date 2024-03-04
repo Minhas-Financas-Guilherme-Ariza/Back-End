@@ -122,7 +122,7 @@ public class CsvServiceImpl implements CsvService{
     }
 
 	@Override
-	public File criarArquivo(File arquivo, List<Lancamento> lancamentos) {
+	public String criarArquivo( List<Lancamento> lancamentos) {
 	    ObjectMapper objectMapper = new ObjectMapper();
 	    objectMapper.registerModule(new JavaTimeModule());
 	    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -131,11 +131,8 @@ public class CsvServiceImpl implements CsvService{
 	    try {
 	        String json = objectMapper.writeValueAsString(lancamentos);
 
-	        FileWriter escritor = new FileWriter(arquivo);
-	        escritor.write(json);
-	        escritor.close();
 
-	        return arquivo;
+	        return json;
 	    } catch (JsonProcessingException e) {
 	        e.printStackTrace();
 	    } catch (IOException e) {

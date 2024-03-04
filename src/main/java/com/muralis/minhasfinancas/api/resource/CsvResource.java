@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.muralis.minhasfinancas.api.dto.CsvDTO;
+import com.muralis.minhasfinancas.api.dto.RespostaUploadDTO;
 import com.muralis.minhasfinancas.model.entity.Categoria;
 import com.muralis.minhasfinancas.model.entity.Lancamento;
 import com.muralis.minhasfinancas.model.enums.TipoLancamento;
@@ -89,12 +90,13 @@ public class CsvResource {
 			}	
 			
 			//Verificação de todas linhas inválidas
-			String response;
+			RespostaUploadDTO response = new RespostaUploadDTO();
 			if(lancamentosComSucesso == 0) {
-				response = "Todas as linhas do arquivo são inválidas, total de linhas com erro: " +lancamentosComErro;
-				return ResponseEntity.badRequest().body(response);
+				return ResponseEntity.badRequest().body("Todas as linhas do arquivo são inválidas, total de linhas com erro: " +lancamentosComErro);
 			}else {
-				response = "Linhas com sucesso: " +lancamentosComSucesso+ "\nLinhas com erro: " +lancamentosComErro;
+				response.setLancamentosComErro(lancamentosComErro);
+				response.setLancamentosComSucesso(lancamentosComSucesso);
+				response.setLancamentosTotais(lancamentosComSucesso+lancamentosComErro);
 			}
 			
 			//Converte a lista de csvDTO para Lista Lançamento e salva no banco de dados
@@ -142,12 +144,11 @@ public class CsvResource {
 		List<Lancamento> lancamentosResultado = new ArrayList();
 		lancamentosResultado = lancamentoService.buscar(lancamentoFiltro);
 
-        File file = csvService.escreverNomeArquivo();
-        
-        //Criando arquivo
-		csvService.criarArquivo(file, lancamentosResultado);
+        //Criando json
+		String json = csvService.criarArquivo(lancamentosResultado);
 	    
-	    return new ResponseEntity(file, HttpStatus.OK);
+	    return new ResponseEntity(json, HttpStatus.OK);
 	}
+	
 	
 }

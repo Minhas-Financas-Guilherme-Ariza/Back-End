@@ -14,7 +14,7 @@ public interface CsvService {
 	
 	boolean verificarConteudoArquivo(MultipartFile multipartFile);
 	
-	File criarArquivo(File arquivo, List<Lancamento> lancamentos);
+	String criarArquivo( List<Lancamento> lancamentos);
 	
 	File escreverNomeArquivo();
 	
