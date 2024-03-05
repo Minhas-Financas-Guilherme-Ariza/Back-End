@@ -143,17 +143,6 @@ public class CsvServiceImpl implements CsvService{
 	}
 
 	@Override
-	public File escreverNomeArquivo() {
-		LocalDateTime localDateTimeAtual = LocalDateTime.now();
-        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-        String carimbo = localDateTimeAtual.format(formatador);
-        String nomeArquivo = "lancamento_" + carimbo + ".json";
-        String home = System.getProperty("user.home");
-        File file = new File(home+ "/Downloads/"+ nomeArquivo);
-        return file;
-	}
-
-	@Override
 	public boolean filtroVazio(Lancamento lancamentoFiltro) {
 		return Stream.of(
 				lancamentoFiltro.getAno() == null,
