@@ -343,7 +343,7 @@ public class LancamentoResourceTest {
 			lancamento.setTipo(TipoLancamento.valueOf(dto.getTipo()));
 		}
 		if (dto.getStatus() != null) {
-			lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
+			lancamento.setStatus(dto.getStatus());
 		}
 		
 		return lancamento;
