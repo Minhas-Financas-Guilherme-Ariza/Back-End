@@ -86,7 +86,7 @@ public class CsvServiceImpl implements CsvService{
 					lancamento.setCategoria(null);
 				}else {
 					Optional<Categoria> categoriaBuscada = categoriaService.obterPorDescricao(csvDTO.getCategoria());
-					if(categoriaBuscada == null) {
+					if(!categoriaBuscada.isPresent()) {
 						Categoria novaCategoria = new Categoria();
 						novaCategoria.setDescricao(csvDTO.getCategoria());
 						lancamento.setCategoria(novaCategoria);
@@ -100,11 +100,7 @@ public class CsvServiceImpl implements CsvService{
 				lancamento.setTipo(TipoLancamento.valueOf(csvDTO.getTipo()));
 				
 				//Status
-				if(csvDTO.getStatus() == null || csvDTO.getStatus() != "EFETIVADO"|| csvDTO.getStatus() != "CANCELADO"|| csvDTO.getStatus() != "PENDENTE") {
-					lancamento.setStatus(StatusLancamento.PENDENTE);
-				} else {
-					lancamento.setStatus(StatusLancamento.valueOf(csvDTO.getStatus()));
-				}
+				lancamento.setStatus(StatusLancamento.valueOf(csvDTO.getStatus()));
 	
 				//Adiciona item convertido
 				listaLancamentosConvertidos.add(lancamento);
@@ -126,7 +122,7 @@ public class CsvServiceImpl implements CsvService{
     }
 
 	@Override
-	public File criarArquivo(File arquivo, List<Lancamento> lancamentos) {
+	public String criarArquivo( List<Lancamento> lancamentos) {
 	    ObjectMapper objectMapper = new ObjectMapper();
 	    objectMapper.registerModule(new JavaTimeModule());
 	    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -135,11 +131,8 @@ public class CsvServiceImpl implements CsvService{
 	    try {
 	        String json = objectMapper.writeValueAsString(lancamentos);
 
-	        FileWriter escritor = new FileWriter(arquivo);
-	        escritor.write(json);
-	        escritor.close();
 
-	        return arquivo;
+	        return json;
 	    } catch (JsonProcessingException e) {
 	        e.printStackTrace();
 	    } catch (IOException e) {
@@ -147,17 +140,6 @@ public class CsvServiceImpl implements CsvService{
 	    }
 
 	    return null;
-	}
-
-	@Override
-	public File escreverNomeArquivo() {
-		LocalDateTime localDateTimeAtual = LocalDateTime.now();
-        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-        String carimbo = localDateTimeAtual.format(formatador);
-        String nomeArquivo = "lancamento_" + carimbo + ".json";
-        String home = System.getProperty("user.home");
-        File file = new File(home+ "/Downloads/"+ nomeArquivo);
-        return file;
 	}
 
 	@Override
@@ -177,5 +159,6 @@ public class CsvServiceImpl implements CsvService{
 				).allMatch(elemento -> elemento);
 		
 	}
+
 
 }

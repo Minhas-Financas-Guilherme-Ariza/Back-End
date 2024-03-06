@@ -27,7 +27,7 @@ public class CategoriaServiceImpl implements CategoriaService{
 	
 	@Override
 	public List<Categoria> buscar() {
-		return repository.findAll();
+		return repository.findAllByAtivoTrue();
 	}
 	
 

@@ -1,6 +1,5 @@
 package com.muralis.minhasfinancas.service;
 
-import java.io.File;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -14,10 +13,9 @@ public interface CsvService {
 	
 	boolean verificarConteudoArquivo(MultipartFile multipartFile);
 	
-	File criarArquivo(File arquivo, List<Lancamento> lancamentos);
-	
-	File escreverNomeArquivo();
+	String criarArquivo( List<Lancamento> lancamentos);
 	
 	boolean filtroVazio(Lancamento lancamentoFiltro);
+	
 	
 }

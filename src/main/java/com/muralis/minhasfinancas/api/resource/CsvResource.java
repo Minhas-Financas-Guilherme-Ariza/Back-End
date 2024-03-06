@@ -8,16 +8,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.muralis.minhasfinancas.api.dto.CsvDTO;
+import com.muralis.minhasfinancas.api.dto.RespostaUploadDTO;
 import com.muralis.minhasfinancas.model.entity.Categoria;
 import com.muralis.minhasfinancas.model.entity.Lancamento;
 import com.muralis.minhasfinancas.model.enums.TipoLancamento;
@@ -79,24 +77,26 @@ public class CsvResource {
 				linhaLancamento.setLatitude(vect[7]);
 				linhaLancamento.setLongitude(vect[8]);
 				
-	            if (!validator.validate(linhaLancamento).isEmpty()) {
-	                
-	                lancamentosComErro++;
-	                line = br.readLine();
-	            } else {
-	                list.add(linhaLancamento);
+	            if (validator.validate(linhaLancamento).isEmpty()) {
+	            	list.add(linhaLancamento);
 	                lancamentosComSucesso++;
+	                line = br.readLine();
+	                
+	            } else {
+	                lancamentosComErro++;
 	                line = br.readLine();
 	            }
 	            linhas++;
 			}	
 			
 			//Verificação de todas linhas inválidas
-			String response;
+			RespostaUploadDTO response = new RespostaUploadDTO();
 			if(lancamentosComSucesso == 0) {
-				response = "Todas as linhas do arquivo são inválidas, total de linhas com erro: " +lancamentosComErro;
+				return ResponseEntity.badRequest().body("Todas as linhas do arquivo são inválidas, total de linhas com erro: " +lancamentosComErro);
 			}else {
-				response = "Linhas com sucesso: " +lancamentosComSucesso+ "\nLinhas com erro: " +lancamentosComErro;
+				response.setLancamentosComErro(lancamentosComErro);
+				response.setLancamentosComSucesso(lancamentosComSucesso);
+				response.setLancamentosTotais(lancamentosComSucesso+lancamentosComErro);
 			}
 			
 			//Converte a lista de csvDTO para Lista Lançamento e salva no banco de dados
@@ -144,12 +144,11 @@ public class CsvResource {
 		List<Lancamento> lancamentosResultado = new ArrayList();
 		lancamentosResultado = lancamentoService.buscar(lancamentoFiltro);
 
-        File file = csvService.escreverNomeArquivo();
-        
-        //Criando arquivo
-		csvService.criarArquivo(file, lancamentosResultado);
+        //Criando json
+		String json = csvService.criarArquivo(lancamentosResultado);
 	    
-	    return new ResponseEntity(file, HttpStatus.OK);
+	    return new ResponseEntity(json, HttpStatus.OK);
 	}
+	
 	
 }
