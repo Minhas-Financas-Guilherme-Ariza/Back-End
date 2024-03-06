@@ -45,7 +45,7 @@ public class LancamentoResource {
 			@RequestParam(value = "mes", required = false) Integer mes,
 			@RequestParam(value = "ano", required = false) Integer ano,
 			@RequestParam(value = "tipo", required = false) TipoLancamento tipo,
-			@RequestParam(value = "status", required = false) StatusLancamento status,
+			@RequestParam(value = "status", required = false) String status,
 			@RequestParam(value = "usuario") Long idUsuario,
 			@RequestParam(value = "id_categoria", required = false) Long idCategoria,
 			@RequestParam(value = "latitude", required = false) String latitude,
@@ -118,7 +118,7 @@ public class LancamentoResource {
 			}
 
 			try {
-				entity.setStatus(statusSelecionado);
+				entity.setStatus(statusSelecionado.name());
 				service.atualizar(entity);
 				return ResponseEntity.ok(entity);
 			} catch (RegraNegocioException e) {
@@ -174,7 +174,7 @@ public class LancamentoResource {
 			lancamento.setTipo(TipoLancamento.valueOf(dto.getTipo()));
 		}
 		if (dto.getStatus() != null) {
-			lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
+			lancamento.setStatus("PENDENTE");
 		}
 
 		return lancamento;

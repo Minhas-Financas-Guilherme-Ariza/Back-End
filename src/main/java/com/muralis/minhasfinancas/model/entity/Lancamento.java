@@ -79,5 +79,11 @@ public class Lancamento {
 	@Column(name="longitude")
 	private String longitude;
 	
-
+	public void setStatus(String statusName) {
+		try {
+			this.status = StatusLancamento.valueOf(statusName);
+		} catch (Exception e) {
+			this.status = StatusLancamento.PENDENTE;
+		}
+	}
 }

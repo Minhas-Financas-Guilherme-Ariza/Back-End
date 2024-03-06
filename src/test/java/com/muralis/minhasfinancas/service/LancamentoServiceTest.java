@@ -53,7 +53,7 @@ public class LancamentoServiceTest {
 
 		Lancamento lancamentoSalvo = LancamentoRepositoryTest.criarLancamento();
 		lancamentoSalvo.setId(1l);
-		lancamentoSalvo.setStatus(StatusLancamento.PENDENTE);
+		lancamentoSalvo.setStatus("PENDENTE");
 		Mockito.when(repository.save(lancamentoASalvar)).thenReturn(lancamentoSalvo);
 		
 		//execucao
@@ -83,7 +83,7 @@ public class LancamentoServiceTest {
 
 		Lancamento lancamentoSalvo = LancamentoRepositoryTest.criarLancamento();
 		lancamentoSalvo.setId(1l);
-		lancamentoSalvo.setStatus(StatusLancamento.PENDENTE);
+		lancamentoSalvo.setStatus("PENDENTE");
 		
 		Mockito.doNothing().when(service).validar(lancamentoSalvo);
 		
@@ -161,7 +161,7 @@ public class LancamentoServiceTest {
 		//cenario
 		Lancamento lancamento = LancamentoRepositoryTest.criarLancamento();
 		lancamento.setId(1l);
-		lancamento.setStatus(StatusLancamento.PENDENTE);
+		lancamento.setStatus("PENDENTE");
 		
 		StatusLancamento novoStatus = StatusLancamento.EFETIVADO;
 		Mockito.doReturn(lancamento).when(service).atualizar(lancamento);

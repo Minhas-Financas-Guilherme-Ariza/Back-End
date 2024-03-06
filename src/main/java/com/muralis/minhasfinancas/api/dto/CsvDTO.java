@@ -56,11 +56,7 @@ public class CsvDTO {
 	private String longitude;
 	
 	
-	public void setStatus(String status) {
-		if(status == null || status.isEmpty()) return;
-		this.status = status;
-		
-	}
+	
 	
 
 }
