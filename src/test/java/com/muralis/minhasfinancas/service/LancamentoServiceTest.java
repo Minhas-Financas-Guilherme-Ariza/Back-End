@@ -26,6 +26,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.muralis.minhasfinancas.api.dto.SaldoDTO;
 import com.muralis.minhasfinancas.exception.RegraNegocioException;
 import com.muralis.minhasfinancas.model.entity.Lancamento;
 import com.muralis.minhasfinancas.model.entity.Usuario;
@@ -296,23 +297,36 @@ public class LancamentoServiceTest {
 
 	        when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.RECEITA), eq(StatusLancamento.EFETIVADO))).thenReturn(receitas);
 	        when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.DESPESA), eq(StatusLancamento.EFETIVADO))).thenReturn(despesas);
-
-	        BigDecimal saldo = service.obterSaldoPorUsuario(1L);
-
-	        assertEquals(new BigDecimal("50.00"), saldo);
+	        
+	        BigDecimal saldoTotal = service.obterSaldoPorUsuario(1L).getSaldoTotal();
+	        assertEquals(new BigDecimal("50.00"), saldoTotal);
+	        
 	 }
 	 
 	 @Test
- 	 public void deveObterSaldoPorUsuarioSemDespesas() {
+ 	 public void deveObterSaldoTotalPorUsuarioSemDespesas() {
 		 
-	        BigDecimal receitas = new BigDecimal("100.00");
-	        BigDecimal despesas = null;
+	        BigDecimal receitasTotais = new BigDecimal("100.00");
+	        BigDecimal despesasTotais = null;
 
-	        when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.RECEITA), eq(StatusLancamento.EFETIVADO))).thenReturn(receitas);
-	        when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.DESPESA), eq(StatusLancamento.EFETIVADO))).thenReturn(despesas);
+	        when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.RECEITA), eq(StatusLancamento.EFETIVADO))).thenReturn(receitasTotais);
+	        when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.DESPESA), eq(StatusLancamento.EFETIVADO))).thenReturn(despesasTotais);
 
-	        BigDecimal saldo = service.obterSaldoPorUsuario(1L);
+	        BigDecimal saldo = service.obterSaldoPorUsuario(1L).getSaldoTotal();
+	        
+	        assertEquals(new BigDecimal("100.00"), saldo);
+	 }
+	 @Test
+ 	 public void deveObterSaldoMensalPorUsuarioSemDespesas() {
+		 
+	        BigDecimal receitasMensais = new BigDecimal("100.00");
+	        BigDecimal despesasMensais = null;
 
+	        when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.RECEITA), eq(StatusLancamento.EFETIVADO))).thenReturn(receitasMensais);
+	        when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.DESPESA), eq(StatusLancamento.EFETIVADO))).thenReturn(despesasMensais);
+
+	        BigDecimal saldo = service.obterSaldoPorUsuario(1L).getSaldoTotal();
+	        
 	        assertEquals(new BigDecimal("100.00"), saldo);
 	 }
 
@@ -325,7 +339,7 @@ public class LancamentoServiceTest {
         when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.RECEITA), eq(StatusLancamento.EFETIVADO))).thenReturn(receitas);
         when(repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(anyLong(), eq(TipoLancamento.DESPESA), eq(StatusLancamento.EFETIVADO))).thenReturn(despesas);
 
-        BigDecimal saldo = service.obterSaldoPorUsuario(1L);
+        BigDecimal saldo = service.obterSaldoPorUsuario(1L).getSaldoTotal();
 
         assertEquals(BigDecimal.ZERO, saldo);
     }

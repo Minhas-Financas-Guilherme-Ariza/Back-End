@@ -2,6 +2,7 @@ package com.muralis.minhasfinancas.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Optional;
@@ -108,11 +109,11 @@ public class UsuarioServiceTest {
 		Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
 		
 		//acao
-		Throwable exception = catchThrowable(() -> service.autenticar("email@email.com", "senha"));
+		Throwable exception = catchThrowableOfType(() -> service.autenticar("email@email.com", "senha"), ErroAutenticacao.class);
 		//verificacao
 		assertThat(exception)
 				.isInstanceOf(ErroAutenticacao.class)
-				.hasMessage("Usuário não encontrado para o e-mail informado.");
+				.hasMessage("Usuário e/ou senha incorreto(s).");
 		
 	}
 	
@@ -132,7 +133,7 @@ public class UsuarioServiceTest {
 		Throwable exception = catchThrowable(() -> service.autenticar("email@email.com", "123"));
 		assertThat(exception)
 				.isInstanceOf(ErroAutenticacao.class)
-				.hasMessage("Senha inválida.");
+				.hasMessage("Usuário e/ou senha incorreto(s).");
 		
 	
 	}
