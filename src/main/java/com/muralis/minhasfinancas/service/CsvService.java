@@ -10,12 +10,7 @@ import com.muralis.minhasfinancas.model.entity.Lancamento;
 public interface CsvService {
 
 	List<Lancamento> converterCsvDtoEMLancamento(List<CsvDTO> listaCsvDTO);
-	
 	boolean verificarConteudoArquivo(MultipartFile multipartFile);
-	
 	String criarArquivo( List<Lancamento> lancamentos);
-	
 	boolean filtroVazio(Lancamento lancamentoFiltro);
-	
-	
 }

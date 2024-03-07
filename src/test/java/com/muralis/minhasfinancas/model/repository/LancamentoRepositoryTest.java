@@ -107,6 +107,4 @@ public class LancamentoRepositoryTest {
 		assertThat(lancamentoInexistente).isNull();
 		
 	}
-
-
 }

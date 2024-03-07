@@ -36,11 +36,7 @@ public class UsuarioServiceTest {
 	
 	@Test
 	public void deveSalvarUmUsuario() {
-		
-		
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		
-		//cenario
 		Mockito.doNothing().when(service).validarEmail(Mockito.anyString());
 		Usuario usuario = Usuario
 					.builder()
@@ -51,11 +47,8 @@ public class UsuarioServiceTest {
 					.build();
 		
 		Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
-		
-		//acao
 		Usuario usuarioSalvo = service.salvarUsuario(usuario);
 		
-		//verificacao
 		assertThat(usuarioSalvo).isNotNull();
 		assertThat(usuarioSalvo.getId()).isEqualTo(1l);
 		assertThat(usuarioSalvo.getNome()).isEqualTo("nome");
@@ -67,59 +60,38 @@ public class UsuarioServiceTest {
 	
 	@Test
 	public void naoDeveSalvarUmUsuarioCOmEmailJaCadastrado() {
-		//cenario
 		String email = "email@email.com";
 		Usuario usuario = Usuario
 					.builder()
 					.email(email)
 					.build();
 		Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail(email);
-		
-		//acao
 		assertThrows(RegraNegocioException.class, () -> service.salvarUsuario(usuario));
-		
-		//verificacao
 		Mockito.verify(repository, Mockito.never()).save(usuario);
-		
-		
 	}
 	
 	@Test
 	public void deveAutenticarUmUsuarioComSucesso() {
-		//CENARIO
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		
 		String email = "email@email.com";
 		String senha = encoder.encode("senha");
-		
 		Usuario usuario = Usuario.builder().email(email).senha(senha).id(1l).build();
 		Mockito.when(repository.findByEmail(email)).thenReturn(Optional.of(usuario));
-		
-		//acao
 		Usuario result = service.autenticar(email, "senha");
-		
-		//verificacao
 		assertThat(result).isNotNull();
-		
 	}
 	
 	@Test
 	public void deveLancarErroQuandoNaoEncontrarUsuarioCadastradoComOEmailInformado() {
-		//cenario
 		Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
-		
-		//acao
 		Throwable exception = catchThrowableOfType(() -> service.autenticar("email@email.com", "senha"), ErroAutenticacao.class);
-		//verificacao
 		assertThat(exception)
 				.isInstanceOf(ErroAutenticacao.class)
 				.hasMessage("Usuário e/ou senha incorreto(s).");
-		
 	}
 	
 	@Test
 	public void deveLancarErroQuandoSenhaNaoBater() {
-		//cenario
 		String senha = "senha";
 		Usuario usuario = Usuario
 				.builder()
@@ -128,38 +100,21 @@ public class UsuarioServiceTest {
 				.build();
 		
 		Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(usuario));
-		
-		//acao
 		Throwable exception = catchThrowable(() -> service.autenticar("email@email.com", "123"));
 		assertThat(exception)
 				.isInstanceOf(ErroAutenticacao.class)
 				.hasMessage("Usuário e/ou senha incorreto(s).");
-		
-	
 	}
 	
 	@Test
 	public void deveValidarEmail() {
-		
-		//cenario
 		Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(false);
-		
-		//acao
 		service.validarEmail("email@email.com");
-		
-		
 	}
 	
 	@Test
 	public void deveLancarErroAoValidarEmailQuandoExistirEmailCadastrado() {
-		
-		//cenario
 		Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(true);
-		
-		//acao
 		assertThrows(RegraNegocioException.class, () -> service.validarEmail("email@email.com"));
-		
-		
 	}
-
 }

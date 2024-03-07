@@ -51,37 +51,28 @@ public class CsvServiceImpl implements CsvService{
 	        
 			for (CsvDTO csvDTO : listaCsvDTO) {
 				
-				//Item foreach Lancamento
 				Lancamento lancamento = new Lancamento();
 				
-				//Data criação
 				lancamento.setDataCadastro(LocalDate.parse(LocalDate.now().format(formatoDataCriacao)));
 				
-				//Descrição
 				lancamento.setDescricao(csvDTO.getDescricao());
 				
-				//Usuário
 				Optional<Usuario> obterPorId = usuarioService.obterPorId(Long.parseLong(csvDTO.getUsuario()));
 				Usuario usuario = obterPorId.get();
 				lancamento.setUsuario(usuario);
 	
-				//Mês e Ano
 				LocalDate data = LocalDate.parse(csvDTO.getDataLancamento(), formatoEntrada);
 				int mes = data.getMonthValue();
 				lancamento.setMes(mes);
 		        int ano = data.getYear();
 	            lancamento.setAno(ano);
 	
-				//Valor
 				lancamento.setValor(new BigDecimal(csvDTO.getValorLancamento()));
 				
-				//Latitude
 				lancamento.setLatitude(csvDTO.getLatitude());
 				
-				//Longitude
 				lancamento.setLongitude(csvDTO.getLongitude());
 				
-				//Categoria
 				if(csvDTO.getCategoria() == null || csvDTO.getCategoria().isEmpty()) {
 					lancamento.setCategoria(null);
 				}else {
@@ -96,21 +87,14 @@ public class CsvServiceImpl implements CsvService{
 					}
 				}
 				
-				//Tipo
 				lancamento.setTipo(TipoLancamento.valueOf(csvDTO.getTipo()));
-				
-				//Status
 				String statusName = csvDTO.getStatus();
 				lancamento.setStatus(statusName);
-	
-				//Adiciona item convertido
 				listaLancamentosConvertidos.add(lancamento);
 				
 			}
-			
 			return listaLancamentosConvertidos;
 		}
-
 
 	@Override
 	public boolean verificarConteudoArquivo(MultipartFile multipartFile) {
@@ -131,15 +115,12 @@ public class CsvServiceImpl implements CsvService{
 
 	    try {
 	        String json = objectMapper.writeValueAsString(lancamentos);
-
-
 	        return json;
 	    } catch (JsonProcessingException e) {
 	        e.printStackTrace();
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
-
 	    return null;
 	}
 
@@ -160,6 +141,4 @@ public class CsvServiceImpl implements CsvService{
 				).allMatch(elemento -> elemento);
 		
 	}
-
-
 }
