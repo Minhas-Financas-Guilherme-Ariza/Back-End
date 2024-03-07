@@ -69,7 +69,7 @@ public class LancamentoRepositoryTest {
 		
 		lancamento.setAno(2018);
 		lancamento.setDescricao("Teste Atualizar");
-		lancamento.setStatus(StatusLancamento.CANCELADO);
+		lancamento.setStatus("CANCELADO");
 		
 		repository.save(lancamento);
 		
@@ -107,6 +107,4 @@ public class LancamentoRepositoryTest {
 		assertThat(lancamentoInexistente).isNull();
 		
 	}
-
-
 }

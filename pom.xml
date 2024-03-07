@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.muralis</groupId>
 	<artifactId>minhasfinancas</artifactId>
-	<version>2.0.0</version>
+	<version>2.1.0</version>
 	<name>minhasfinancas</name>
 	<description>Projeto de gerenciamento de finanças pessoais</description>
 
@@ -92,7 +92,10 @@
             <scope>test</scope>            
         </dependency>
 		
-		
+		<dependency>
+   			<groupId>org.springframework.boot</groupId>
+   			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 		
 		
 	</dependencies>

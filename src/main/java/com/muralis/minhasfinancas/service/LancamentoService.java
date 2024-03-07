@@ -1,9 +1,9 @@
 package com.muralis.minhasfinancas.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import com.muralis.minhasfinancas.api.dto.SaldoDTO;
 import com.muralis.minhasfinancas.model.entity.Lancamento;
 import com.muralis.minhasfinancas.model.enums.StatusLancamento;
 
@@ -23,7 +23,7 @@ public interface LancamentoService {
 	
 	Optional<Lancamento> obterPorId(long id);
 	
-	BigDecimal obterSaldoPorUsuario(Long id);
+	SaldoDTO obterSaldoPorUsuario(Long id);
 
 	List<Lancamento> salvarComStatus(List<Lancamento> lancamentos);
 

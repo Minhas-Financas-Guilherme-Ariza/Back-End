@@ -79,5 +79,8 @@ public class Lancamento {
 	@Column(name="longitude")
 	private String longitude;
 	
-
+	public void setStatus(String novoStatus) {
+		if (novoStatus == null || novoStatus.isEmpty()) return;
+		this.status = StatusLancamento.valueOf(novoStatus);
+	}
 }

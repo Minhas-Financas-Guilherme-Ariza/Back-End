@@ -27,25 +27,20 @@ public class CategoriaServiceImpl implements CategoriaService{
 	
 	@Override
 	public List<Categoria> buscar() {
-		return repository.findAll();
+		return repository.findAllByAtivoTrue();
 	}
-	
 
 	@Override
 	public void validar(Categoria categoria) {
 		if(categoria.getDescricao() == null || categoria.getDescricao().trim().equals("")){
 			throw new RegraNegocioException("Preencha o campo de Descrição.");
 		}
-		
 		if(categoria.getDescricao().codePointCount(0, categoria.getDescricao().length()) >  255){
 			throw new RegraNegocioException("O limite de caracteres desse campo é 255.");
 		}
-		
 		if (!repository.findByDescricao(categoria.getDescricao()).isEmpty()) {
 			throw new RegraNegocioException("Essa descrição já existe.");
 		}
-		
-		
 	}
 	
 	@Override
@@ -57,7 +52,4 @@ public class CategoriaServiceImpl implements CategoriaService{
 	public Optional<Categoria> obterPorDescricao(String descricao) {
 		return repository.findFirstByDescricao(descricao);
 	}
-
-	
-
 }

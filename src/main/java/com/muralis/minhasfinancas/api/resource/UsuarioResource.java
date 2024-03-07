@@ -1,6 +1,5 @@
 package com.muralis.minhasfinancas.api.resource;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.muralis.minhasfinancas.api.dto.SaldoDTO;
 import com.muralis.minhasfinancas.api.dto.TokenDTO;
 import com.muralis.minhasfinancas.api.dto.UsuarioDTO;
 import com.muralis.minhasfinancas.exception.ErroAutenticacao;
@@ -46,7 +46,7 @@ public class UsuarioResource {
 		}
 	}
 	
-	@PostMapping()
+	@PostMapping
 	public ResponseEntity salvar(@RequestBody UsuarioDTO dto) {
 		
 		Usuario usuario = Usuario.builder()
@@ -73,7 +73,7 @@ public class UsuarioResource {
 			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
 		
-		BigDecimal saldo = lancamentoService.obterSaldoPorUsuario(id);
+		SaldoDTO saldo = lancamentoService.obterSaldoPorUsuario(id);
 		return ResponseEntity.ok(saldo);
 	}
 

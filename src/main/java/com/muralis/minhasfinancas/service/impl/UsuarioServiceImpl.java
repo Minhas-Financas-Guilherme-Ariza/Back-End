@@ -29,15 +29,10 @@ public class UsuarioServiceImpl implements UsuarioService{
 	@Override
 	public Usuario autenticar(String email, String senha) {
 		Optional<Usuario> usuario = repository.findByEmail(email);
-		
-		if(!usuario.isPresent()) {
-			throw new ErroAutenticacao("Usuário não encontrado para o e-mail informado.");
-		}
-		
-		boolean senhasBatem = encoder.matches(senha, usuario.get().getSenha());
-		
-		if(!senhasBatem) {
-			throw new ErroAutenticacao("Senha inválida.");
+		boolean senhasCoincidem = encoder.matches(senha, usuario.get().getSenha());
+
+		if(!usuario.isPresent() || !senhasCoincidem) {
+			throw new ErroAutenticacao("Usuário e/ou senha incorreto(s).");
 		}
 
 		return usuario.get();
