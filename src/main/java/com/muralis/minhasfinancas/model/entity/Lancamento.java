@@ -80,7 +80,10 @@ public class Lancamento {
 	private String longitude;
 	
 	public void setStatus(String novoStatus) {
-		if (novoStatus == null || novoStatus.isEmpty()) return;
+		if (novoStatus == null || novoStatus.isEmpty()) {
+			this.status = StatusLancamento.PENDENTE;
+			return;
+		} 
 		this.status = StatusLancamento.valueOf(novoStatus);
 	}
 }
