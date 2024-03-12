@@ -45,7 +45,6 @@ public class LancamentoResource {
 			@RequestParam(value = "mes", required = false) Integer mes,
 			@RequestParam(value = "ano", required = false) Integer ano,
 			@RequestParam(value = "tipo", required = false) TipoLancamento tipo,
-			@RequestParam(value = "status", required = false) String status,
 			@RequestParam(value = "usuario") Long idUsuario,
 			@RequestParam(value = "id_categoria", required = false) Long idCategoria,
 			@RequestParam(value = "latitude", required = false) String latitude,
@@ -55,7 +54,6 @@ public class LancamentoResource {
 		lancamentoFiltro.setMes(mes);
 		lancamentoFiltro.setAno(ano);
 		lancamentoFiltro.setTipo(tipo);
-		lancamentoFiltro.setStatus(status);
 		lancamentoFiltro.setLatitude(latitude);
 		lancamentoFiltro.setLongitude(longitude);
 
@@ -70,11 +68,9 @@ public class LancamentoResource {
 			}
 		}
 		List<Lancamento> lancamentos = new ArrayList();
-
 		lancamentos = service.buscar(lancamentoFiltro);
-
+		
 		return ResponseEntity.ok(lancamentos);
-
 	}
 
 	@GetMapping("{id}")
