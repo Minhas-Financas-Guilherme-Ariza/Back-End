@@ -56,16 +56,13 @@ public class CsvResource {
 		List<CsvDTO> list = new ArrayList<CsvDTO>();
 		
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-			
 			String line = br.readLine();
 			line = br.readLine();
 			Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-			
 			int linhas = 1;
 			
 			while (line != null ) {
 				CsvDTO linhaLancamento = new CsvDTO();
-
 				String[] vect = line.split(",");
 				linhaLancamento.setDescricao(vect[0]);
 				linhaLancamento.setValorLancamento(vect[1].replace("$", ""));
@@ -81,15 +78,12 @@ public class CsvResource {
 	            	list.add(linhaLancamento);
 	                lancamentosComSucesso++;
 	                line = br.readLine();
-	                
 	            } else {
 	                lancamentosComErro++;
 	                line = br.readLine();
 	            }
 	            linhas++;
 			}	
-			
-			//Verificação de todas linhas inválidas
 			RespostaUploadDTO response = new RespostaUploadDTO();
 			if(lancamentosComSucesso == 0) {
 				return ResponseEntity.badRequest().body("Todas as linhas do arquivo são inválidas, total de linhas com erro: " +lancamentosComErro);
@@ -98,12 +92,8 @@ public class CsvResource {
 				response.setLancamentosComSucesso(lancamentosComSucesso);
 				response.setLancamentosTotais(lancamentosComSucesso+lancamentosComErro);
 			}
-			
-			//Converte a lista de csvDTO para Lista Lançamento e salva no banco de dados
 			List<Lancamento> listaConvertida = csvService.converterCsvDtoEMLancamento(list);
 			lancamentoService.salvarComStatus(listaConvertida);
-			
-			
 			
 			return ResponseEntity.ok(response);
 			
@@ -111,7 +101,6 @@ public class CsvResource {
 		catch (IOException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
-		
 	}
 	
 	@GetMapping(value = "/download")
@@ -132,19 +121,13 @@ public class CsvResource {
 			Optional<Categoria> categoria = categoriaService.obterPorId(idCategoria);
 			if(categoria.isPresent()) {
 				lancamentoFiltro.setCategoria(categoria.get());
-
 			}
 		}
-		
-		//Verifica se o filtro está vazio, caso esteja, seta o ano do filtro como o ano atual
 		if(csvService.filtroVazio(lancamentoFiltro)) {
 			lancamentoFiltro.setAno(LocalDate.now().getYear());
 		}
-		
 		List<Lancamento> lancamentosResultado = new ArrayList();
 		lancamentosResultado = lancamentoService.buscar(lancamentoFiltro);
-
-        //Criando json
 		String json = csvService.criarArquivo(lancamentosResultado);
 	    
 	    return new ResponseEntity(json, HttpStatus.OK);

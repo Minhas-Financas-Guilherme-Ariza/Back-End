@@ -45,14 +45,9 @@ public class CategoriaServiceTest {
 					.descricao("descrição teste")
 					.ativo(true)
 					.build();
-		
 		Mockito.when(repository.save(Mockito.any(Categoria.class))).thenReturn(categoria);
 		
-		//acao
 		Categoria categoriaSalva = service.salvar(categoria);
-			
-		
-		//verificacao
 		Assertions.assertThat(categoriaSalva).isNotNull();
 		Assertions.assertThat(categoriaSalva.getId()).isEqualTo(1l);
 		Assertions.assertThat(categoriaSalva.getDescricao()).isEqualTo("descrição teste");
@@ -94,12 +89,10 @@ public class CategoriaServiceTest {
     public void deveValidarCategoriaComDescricaoExistente() {
         Categoria categoria = new Categoria();
         categoria.setDescricao("Teste");
-
         List<Categoria> categorias = new ArrayList<>();
         categorias.add(new Categoria());
 
         when(repository.findByDescricao(categoria.getDescricao())).thenReturn(categorias);
-
         assertThrows(RegraNegocioException.class, () -> service.validar(categoria));
     }
 
@@ -108,11 +101,9 @@ public class CategoriaServiceTest {
         Long id = 1L;
         Categoria categoria = new Categoria();
         categoria.setId(id);
-
         when(repository.findById(id)).thenReturn(Optional.of(categoria));
 
         Optional<Categoria> result = service.obterPorId(id);
-
         assertTrue(result.isPresent());
         assertEquals(id, result.get().getId());
     }
@@ -122,11 +113,9 @@ public class CategoriaServiceTest {
         String descricao = "Teste";
         Categoria categoria = new Categoria();
         categoria.setDescricao(descricao);
-
         when(repository.findFirstByDescricao(descricao)).thenReturn(Optional.of(categoria));
 
         Optional<Categoria> result = service.obterPorDescricao(descricao);
-
         assertTrue(result.isPresent());
         assertEquals(descricao, result.get().getDescricao());
     }
@@ -136,15 +125,10 @@ public class CategoriaServiceTest {
         List<Categoria> categorias = new ArrayList<>();
         categorias.add(new Categoria());
         categorias.add(new Categoria());
-
         when(repository.findAll()).thenReturn(categorias);
 
         List<Categoria> result = service.buscar();
-
         assertSame(categorias, result);
         assertEquals(2, result.size()); // Verificando se a lista possui o tamanho esperado
     }
-	
-	
-
 }

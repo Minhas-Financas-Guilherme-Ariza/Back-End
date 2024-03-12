@@ -48,35 +48,26 @@ public class LancamentoResourceTest {
     static final String API = "/api/lancamentos";
     static final MediaType JSON = MediaType.APPLICATION_JSON;
 
-    
 	@Autowired
 	MockMvc mvc;
 
-	
 	@Autowired
 	LancamentoRepository repository;
 	
 	@MockBean
 	LancamentoService service;
-
 	
 	@Autowired
 	UsuarioRepository usuarioRepository;
+	
 	@MockBean
 	UsuarioService usuarioService;
-
 	
 	@MockBean
 	CategoriaService categoriaService;
     
-	
-	
-    
-    
     @Test
     public void deveSalvarLancamento() throws Exception {
-        //cenário
-    	
     	Usuario usuario = Usuario
     			.builder()
     			.id(1l)
@@ -97,7 +88,6 @@ public class LancamentoResourceTest {
     	
     	categoriaService.salvar(categoria);
     	Mockito.when(categoriaService.obterPorId(categoria.getId())).thenReturn(Optional.of(categoria));
-    	
     	LancamentoDTO dto = criarLancamentoDTO();
 
         Lancamento lancamento = converter(dto);
@@ -106,7 +96,6 @@ public class LancamentoResourceTest {
 
         String json = new ObjectMapper().writeValueAsString(dto);
 
-        //execução e verificação
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .post(API)
                 .accept(JSON)
@@ -114,14 +103,12 @@ public class LancamentoResourceTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                ;
+                .andExpect(MockMvcResultMatchers.status().isCreated());
         
     }
 
     @Test
     public void deveObterLancamentoComFiltro() throws Exception {
-        // Cenário
         Long id = 1l;
         Lancamento lancamento = criarLancamento(id);
         String descricao = "Descricao";
@@ -131,7 +118,6 @@ public class LancamentoResourceTest {
         Mockito.when(usuarioService.obterPorId(lancamento.getUsuario().getId())).thenReturn(Optional.of(new Usuario()));
         Mockito.when(service.buscar(Mockito.any(Lancamento.class))).thenReturn(Collections.singletonList(lancamento));
 
-        // Execução e verificação
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get(API)
                 .param("usuario", String.valueOf(id))
@@ -150,27 +136,20 @@ public class LancamentoResourceTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].tipo").value(String.valueOf(lancamento.getTipo())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].status").value(String.valueOf(lancamento.getStatus())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].usuario").value(lancamento.getUsuario()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].categoria").value(lancamento.getCategoria()))
-                ;
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].categoria").value(lancamento.getCategoria()));
     }
 
     
     @Test
     public void deveRetornarNotFoundQuandoObterLancamentoInexistente() throws Exception {
-        //cenário
         Long id = 1l;
-
         Mockito.when(service.obterPorId(id)).thenReturn(Optional.empty());
-
-        //execução e verificação
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get(API.concat("/" + id));
 
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
-    
-    
     
     @Test
     public void deveAtualizarLancamento() throws Exception {
@@ -194,19 +173,14 @@ public class LancamentoResourceTest {
     	
     	categoriaService.salvar(categoria);
     	Mockito.when(categoriaService.obterPorId(categoria.getId())).thenReturn(Optional.of(categoria));
-        //cenário
         Long id = 1l;
-        
         Lancamento lancamento = criarLancamento(id);
-        
         LancamentoDTO dto = converter(lancamento);
         
         Mockito.when(service.obterPorId(id)).thenReturn(Optional.of(lancamento));
         Mockito.when(service.atualizar(lancamento)).thenReturn(lancamento);
 
         String json = new ObjectMapper().writeValueAsString(dto);
-
-        //execução e verificação
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .put(API.concat("/" + 1))
                 .accept(JSON)
@@ -222,7 +196,6 @@ public class LancamentoResourceTest {
     
     @Test
     public void deveAtualizarStatusLancamento() throws Exception {
-        //cenário
         Long id = 1L;
         AtualizaStatusDTO dto = new AtualizaStatusDTO();
         dto.setStatus(StatusLancamento.CANCELADO.toString());
@@ -233,7 +206,6 @@ public class LancamentoResourceTest {
 
         String json = new ObjectMapper().writeValueAsString(dto);
 
-        //execução e verificação
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .put(API.concat("/" + id + "/atualiza-status"))
                 .accept(JSON)
@@ -250,13 +222,10 @@ public class LancamentoResourceTest {
     
     @Test
     public void deveDeletarLancamento() throws Exception {
-        //cenário
         Long id = 1L;
         Lancamento lancamento = criarLancamento(id);
 
         Mockito.when(service.obterPorId(id)).thenReturn(Optional.of(lancamento));
-
-        //execução e verificação
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .delete(API.concat("/" + id))
                 .accept(JSON)
@@ -295,6 +264,7 @@ public class LancamentoResourceTest {
                 .categoria(Categoria.builder().id(1l).build())
                 .build();
     }
+    
     public LancamentoDTO converter(Lancamento lancamento) {
 		return LancamentoDTO.builder()
 				.id(lancamento.getId())
@@ -310,10 +280,8 @@ public class LancamentoResourceTest {
 				.longitude(lancamento.getLongitude())
 				.dataCadastro(lancamento.getDataCadastro())
 				.build();
-				
 	}
     
-	
 	public Lancamento converter(LancamentoDTO dto) {
 		Lancamento lancamento = new Lancamento();
 		lancamento.setId(dto.getId());
@@ -330,24 +298,19 @@ public class LancamentoResourceTest {
 			.orElseThrow(  () -> new RegraNegocioException("Usuário não encontrado para o Id Informado."));
 
 		lancamento.setUsuario(usuario);
-		
-		
 		Categoria categoria = categoriaService
 				.obterPorId(dto.getCategoria())
 				.orElseThrow( () -> new RegraNegocioException("Categoria não encontrada para o Id Informado."));
-		
 		lancamento.setCategoria(categoria);
-		
 		
 		if (dto.getTipo() != null) {
 			lancamento.setTipo(TipoLancamento.valueOf(dto.getTipo()));
 		}
 		if (dto.getStatus() != null) {
-			lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
+			lancamento.setStatus(dto.getStatus());
 		}
 		
 		return lancamento;
-		
 	}
 }
 
