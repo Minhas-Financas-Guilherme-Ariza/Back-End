@@ -1,19 +1,17 @@
 package com.muralis.minhasfinancas.service.impl;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.muralis.minhasfinancas.api.dto.UploadFeatureLayerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +24,6 @@ import com.muralis.minhasfinancas.api.dto.CsvDTO;
 import com.muralis.minhasfinancas.model.entity.Categoria;
 import com.muralis.minhasfinancas.model.entity.Lancamento;
 import com.muralis.minhasfinancas.model.entity.Usuario;
-import com.muralis.minhasfinancas.model.enums.StatusLancamento;
 import com.muralis.minhasfinancas.model.enums.TipoLancamento;
 import com.muralis.minhasfinancas.service.CategoriaService;
 import com.muralis.minhasfinancas.service.CsvService;
@@ -94,7 +91,28 @@ public class CsvServiceImpl implements CsvService{
 				
 			}
 			return listaLancamentosConvertidos;
+	}
+
+	@Override
+	public List<UploadFeatureLayerDTO> converterLancamentoEmLancamentoDTO(List<Lancamento> listaLancamento) {
+		List<UploadFeatureLayerDTO> listaUploadFeatureLayerDTO = new ArrayList<>();
+		for (Lancamento lancamento : listaLancamento){
+			UploadFeatureLayerDTO uploadFeatureLayerDTO = new UploadFeatureLayerDTO();
+			uploadFeatureLayerDTO.setId(lancamento.getId());
+			uploadFeatureLayerDTO.setDescricao(lancamento.getDescricao());
+			uploadFeatureLayerDTO.setMes(lancamento.getMes());
+			uploadFeatureLayerDTO.setAno(lancamento.getAno());
+			uploadFeatureLayerDTO.setValor(lancamento.getValor());
+			uploadFeatureLayerDTO.setUsuario(lancamento.getUsuario().getId());
+			uploadFeatureLayerDTO.setCategoriaDescricao(lancamento.getCategoria().getDescricao());
+			uploadFeatureLayerDTO.setTipo(lancamento.getTipo().toString());
+			uploadFeatureLayerDTO.setStatus(lancamento.getStatus().toString());
+			uploadFeatureLayerDTO.setLatitude(lancamento.getLatitude());
+			uploadFeatureLayerDTO.setLongitude(lancamento.getLongitude());
+			listaUploadFeatureLayerDTO.add(uploadFeatureLayerDTO);
 		}
+		return listaUploadFeatureLayerDTO;
+	}
 
 	@Override
 	public boolean verificarConteudoArquivo(MultipartFile multipartFile) {

@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CsvDTO {
-	
+
 	@MaxCodePoints(value = 100)
 	@NotEmpty
 	private String descricao;
@@ -54,9 +54,5 @@ public class CsvDTO {
 	@MaxCodePoints(value = 13)
 	@NotEmpty
 	private String longitude;
-	
-	
-	
-	
 
 }
