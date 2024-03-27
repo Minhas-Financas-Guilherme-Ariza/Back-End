@@ -99,16 +99,6 @@ public class CsvResource {
 			List<UploadFeatureLayerDTO> listaConvertidaParaLancamentoDTO = csvService.converterLancamentoEmLancamentoDTO(listaConvertidaParaLancamento);
 			response.setLancamentosValidados(listaConvertidaParaLancamentoDTO);
 
-			ObjectMapper objectMapper = new ObjectMapper();
-			try {
-				String json = objectMapper.writeValueAsString(response);
-				return ResponseEntity.ok(json);
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
 
 			return ResponseEntity.ok(response);
 			
