@@ -1,7 +1,6 @@
 package com.muralis.minhasfinancas.api.resource;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
@@ -12,6 +11,8 @@ import java.util.Optional;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.muralis.minhasfinancas.api.dto.UploadFeatureLayerDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -92,9 +93,13 @@ public class CsvResource {
 				response.setLancamentosComSucesso(lancamentosComSucesso);
 				response.setLancamentosTotais(lancamentosComSucesso+lancamentosComErro);
 			}
-			List<Lancamento> listaConvertida = csvService.converterCsvDtoEMLancamento(list);
-			lancamentoService.salvarComStatus(listaConvertida);
-			
+			List<Lancamento> listaConvertidaParaLancamento = csvService.converterCsvDtoEMLancamento(list);
+			lancamentoService.salvarComStatus(listaConvertidaParaLancamento);
+
+			List<UploadFeatureLayerDTO> listaConvertidaParaLancamentoDTO = csvService.converterLancamentoEmLancamentoDTO(listaConvertidaParaLancamento);
+			response.setLancamentosValidados(listaConvertidaParaLancamentoDTO);
+
+
 			return ResponseEntity.ok(response);
 			
 		}
