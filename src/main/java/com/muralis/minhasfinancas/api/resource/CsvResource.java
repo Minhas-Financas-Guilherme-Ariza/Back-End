@@ -37,7 +37,7 @@ import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/guilherme/api/arquivo")
+@RequestMapping("/api/arquivo")
 @RequiredArgsConstructor
 public class CsvResource {
 	

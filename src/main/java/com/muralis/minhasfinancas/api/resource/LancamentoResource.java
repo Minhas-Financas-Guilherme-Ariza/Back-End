@@ -32,7 +32,7 @@ import com.muralis.minhasfinancas.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/guilherme/api/lancamentos")
+@RequestMapping("/api/lancamentos")
 @RequiredArgsConstructor
 public class LancamentoResource {
 

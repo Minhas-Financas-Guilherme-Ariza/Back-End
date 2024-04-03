@@ -16,7 +16,7 @@ import com.muralis.minhasfinancas.service.CategoriaService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/guilherme/api/categorias")
+@RequestMapping("/api/categorias")
 @RequiredArgsConstructor
 public class CategoriaResource {
 	
