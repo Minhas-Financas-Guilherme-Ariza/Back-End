@@ -104,7 +104,11 @@ public class CsvServiceImpl implements CsvService{
 			uploadFeatureLayerDTO.setAno(lancamento.getAno());
 			uploadFeatureLayerDTO.setValor(lancamento.getValor());
 			uploadFeatureLayerDTO.setUsuario(lancamento.getUsuario().getId());
-			uploadFeatureLayerDTO.setCategoriaDescricao(lancamento.getCategoria().getDescricao());
+			try{
+				uploadFeatureLayerDTO.setCategoriaDescricao(lancamento.getCategoria().getDescricao());
+			}catch (NullPointerException e){
+				uploadFeatureLayerDTO.setCategoriaDescricao(null);
+			}
 			uploadFeatureLayerDTO.setTipo(lancamento.getTipo().toString());
 			uploadFeatureLayerDTO.setStatus(lancamento.getStatus().toString());
 			uploadFeatureLayerDTO.setLatitude(lancamento.getLatitude());
