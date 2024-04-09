@@ -40,12 +40,12 @@ import com.muralis.minhasfinancas.service.UsuarioService;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@SpringBootTest(classes = MinhasfinancasApplication.class)
+@SpringBootTest(classes = MinhasfinancasApplication.class, properties = "org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration")
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LancamentoResourceTest {
 
-    static final String API = "/api/lancamentos";
+    static final String API = "/lancamentos";
     static final MediaType JSON = MediaType.APPLICATION_JSON;
 
 	@Autowired

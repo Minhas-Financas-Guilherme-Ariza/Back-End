@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -45,11 +46,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@SpringBootTest(classes = MinhasfinancasApplication.class)
+@SpringBootTest(classes = MinhasfinancasApplication.class, properties = "org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration")
 @AutoConfigureMockMvc(addFilters = false)
 public class CsvResourceTest {
 	
-	static final String API = "/api/arquivo";
+	static final String API = "/arquivo";
     
     @Autowired
     MockMvc mvc;

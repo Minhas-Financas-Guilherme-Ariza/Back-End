@@ -28,7 +28,7 @@ import com.muralis.minhasfinancas.service.UsuarioService;
 @AutoConfigureMockMvc(addFilters = false)
 public class UsuarioResourceTest {
 	
-	static final String API = "/api/usuarios";
+	static final String API = "/usuarios";
 	static final MediaType JSON = MediaType.APPLICATION_JSON;
 	
 	@Autowired
