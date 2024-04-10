@@ -46,7 +46,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@SpringBootTest(classes = MinhasfinancasApplication.class, properties = "org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration")
+@SpringBootTest(classes = MinhasfinancasApplication.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class CsvResourceTest {
 	

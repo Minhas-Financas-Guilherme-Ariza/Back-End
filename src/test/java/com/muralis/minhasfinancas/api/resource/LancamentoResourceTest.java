@@ -40,7 +40,7 @@ import com.muralis.minhasfinancas.service.UsuarioService;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@SpringBootTest(classes = MinhasfinancasApplication.class, properties = "org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration")
+@SpringBootTest(classes = MinhasfinancasApplication.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LancamentoResourceTest {
