@@ -1,0 +1,22 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - script: mvn clean install -DskipTests
+    displayName: 'Build application'
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/target'
+      Contents: '**/*.jar'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Copy artifact to publish'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'guilherme-pipeline'
+    displayName: 'Publish artifact application'

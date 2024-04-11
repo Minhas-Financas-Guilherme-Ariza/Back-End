@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "categoria", schema = "financas")
+@Table(name = "categoria")
 @Builder
 @Data
 @AllArgsConstructor
@@ -33,6 +33,5 @@ public class Categoria {
 	
 	@Column(name = "ativo")
 	private boolean ativo = true;
-	
 
 }

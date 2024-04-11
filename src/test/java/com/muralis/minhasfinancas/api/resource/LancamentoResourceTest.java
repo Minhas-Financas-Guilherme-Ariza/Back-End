@@ -45,7 +45,7 @@ import com.muralis.minhasfinancas.service.UsuarioService;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LancamentoResourceTest {
 
-    static final String API = "/api/lancamentos";
+    static final String API = "/lancamentos";
     static final MediaType JSON = MediaType.APPLICATION_JSON;
 
 	@Autowired

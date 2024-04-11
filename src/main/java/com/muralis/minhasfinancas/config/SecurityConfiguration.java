@@ -27,8 +27,6 @@ import com.muralis.minhasfinancas.api.JwtTokenFilter;
 import com.muralis.minhasfinancas.service.JwtService;
 import com.muralis.minhasfinancas.service.impl.SecurityUserDetailsService;
 
-
-
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
@@ -62,8 +60,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 				.antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
-				.antMatchers(HttpMethod.POST, "/api/usuarios/autenticar").permitAll()
-				.antMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
+				.antMatchers(HttpMethod.POST, "/usuarios/autenticar").permitAll()
+				.antMatchers(HttpMethod.POST, "/usuarios").permitAll()
 				.anyRequest().authenticated()	
 		.and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -72,7 +70,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			;
 
 	}
-	
 	@Bean
 	public FilterRegistrationBean<CorsFilter> corsFilter(){
 		
@@ -95,8 +92,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		
 		return filter;
 	}
-	
-	
-	
-	
 }

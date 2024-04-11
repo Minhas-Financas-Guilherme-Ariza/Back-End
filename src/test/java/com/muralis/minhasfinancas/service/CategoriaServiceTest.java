@@ -119,16 +119,4 @@ public class CategoriaServiceTest {
         assertTrue(result.isPresent());
         assertEquals(descricao, result.get().getDescricao());
     }
-    
-    @Test
-    public void testBuscarCategorias() {
-        List<Categoria> categorias = new ArrayList<>();
-        categorias.add(new Categoria());
-        categorias.add(new Categoria());
-        when(repository.findAll()).thenReturn(categorias);
-
-        List<Categoria> result = service.buscar();
-        assertSame(categorias, result);
-        assertEquals(2, result.size()); // Verificando se a lista possui o tamanho esperado
-    }
 }

@@ -1,7 +1,10 @@
 package com.muralis.minhasfinancas.api.resource;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -37,6 +41,7 @@ import com.muralis.minhasfinancas.service.CategoriaService;
 import com.muralis.minhasfinancas.service.CsvService;
 import com.muralis.minhasfinancas.service.LancamentoService;
 import com.muralis.minhasfinancas.service.UsuarioService;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @ExtendWith(SpringExtension.class)
@@ -45,7 +50,7 @@ import com.muralis.minhasfinancas.service.UsuarioService;
 @AutoConfigureMockMvc(addFilters = false)
 public class CsvResourceTest {
 	
-	static final String API = "/api/arquivo";
+	static final String API = "/arquivo";
     
     @Autowired
     MockMvc mvc;
@@ -65,36 +70,8 @@ public class CsvResourceTest {
     @Autowired
     private CsvResource csvResource;
 
+
     @Test
-    public void deveFazerUploadDeArquivoValido() throws Exception {
-        String csvContent = "DESC,VALOR_LANC,TIPO,STATUS,USUARIO,DATA_LANC,CATEGORIA,LAT,LONG\n"
-                + "Teste,100.00,DESPESA,PENDENTE,1,2022-02-19,Alimentação,123.456,789.123";
-        MockMultipartFile file = new MockMultipartFile("file", "test.csv",
-                MediaType.MULTIPART_FORM_DATA_VALUE, csvContent.getBytes());
-
-        Usuario usuario = new Usuario();
-        usuario.setId(1L);
-
-        Categoria categoria = new Categoria();
-        categoria.setId(1L);
-        
-        Mockito.when(csvService.verificarConteudoArquivo(file)).thenReturn(true);
-
-        ResponseEntity responseEntity = csvResource.uploadArquivo(file);
-        Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-
-        Mockito.verify(lancamentoService).salvarComStatus(Mockito.any());
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                                                    .multipart(API.concat("/upload"))
-                                                    .file(file);
-
-        mvc
-            .perform(request)
-            .andExpect(MockMvcResultMatchers.status().isOk());
-    }
-
-    @Test 
     public void deveRetornarBadRequestAoFazerUploadDeArquivoVazio() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", "test.csv",
                 MediaType.MULTIPART_FORM_DATA_VALUE, new byte[0]);

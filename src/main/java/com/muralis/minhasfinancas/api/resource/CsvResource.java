@@ -13,6 +13,7 @@ import javax.validation.Validator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muralis.minhasfinancas.api.dto.UploadFeatureLayerDTO;
+import com.muralis.minhasfinancas.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,13 +38,14 @@ import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/api/arquivo")
+@RequestMapping("/arquivo")
 @RequiredArgsConstructor
 public class CsvResource {
 	
 	private final CategoriaService categoriaService;
 	private final LancamentoService lancamentoService;
 	private final CsvService csvService;
+	private final UsuarioService usuarioService;
 	
 	@PostMapping(value = "/upload" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> uploadArquivo( @RequestParam MultipartFile file){
@@ -75,7 +77,7 @@ public class CsvResource {
 				linhaLancamento.setLatitude(vect[7]);
 				linhaLancamento.setLongitude(vect[8]);
 				
-	            if (validator.validate(linhaLancamento).isEmpty()) {
+	            if (validator.validate(linhaLancamento).isEmpty() && usuarioService.obterPorId(Long.parseLong(linhaLancamento.getUsuario())).isPresent() ) {
 	            	list.add(linhaLancamento);
 	                lancamentosComSucesso++;
 	                line = br.readLine();

@@ -25,7 +25,7 @@ import com.muralis.minhasfinancas.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/usuarios")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class UsuarioResource {

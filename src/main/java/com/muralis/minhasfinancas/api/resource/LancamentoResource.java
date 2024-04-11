@@ -32,7 +32,7 @@ import com.muralis.minhasfinancas.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/lancamentos")
+@RequestMapping("/lancamentos")
 @RequiredArgsConstructor
 public class LancamentoResource {
 
@@ -134,11 +134,24 @@ public class LancamentoResource {
 	}
 
 	public LancamentoDTO converter(Lancamento lancamento) {
-		return LancamentoDTO.builder().id(lancamento.getId()).descricao(lancamento.getDescricao())
-				.valor(lancamento.getValor()).mes(lancamento.getMes()).ano(lancamento.getAno())
-				.status(lancamento.getStatus().name()).tipo(lancamento.getTipo().name())
-				.usuario(lancamento.getUsuario().getId()).categoria(lancamento.getCategoria().getId())
-				.latitude(lancamento.getLatitude()).longitude(lancamento.getLongitude())
+		Long idCategoria;
+		try{
+			idCategoria = lancamento.getCategoria().getId();
+		}catch (NullPointerException e){
+			idCategoria = null;
+		}
+
+		return LancamentoDTO.builder()
+				.id(lancamento.getId())
+				.descricao(lancamento.getDescricao())
+				.valor(lancamento.getValor()).mes(lancamento.getMes())
+				.ano(lancamento.getAno())
+				.status(lancamento.getStatus().name())
+				.tipo(lancamento.getTipo().name())
+				.categoria(idCategoria)
+				.usuario(lancamento.getUsuario().getId())
+				.latitude(lancamento.getLatitude())
+				.longitude(lancamento.getLongitude())
 				.dataCadastro(lancamento.getDataCadastro()).build();
 
 	}
