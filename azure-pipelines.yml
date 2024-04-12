@@ -5,7 +5,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-  - script: mvn clean install -DskipTests
+  - script: mvn clean install
     displayName: 'Build application'
 
   - task: CopyFiles@2
